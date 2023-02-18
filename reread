@@ -54,7 +54,7 @@ class bot:
     def start(self):
         if token != '':
                 try:
-                    self.han=CHRLINE(token,device="DESKTOPWIN")
+                    self.han=CHRLINE(token,device="DESKTOPWIN",encType=0)
                     print('Login By Token')
                 except Exception as e:
                     open('account.json','w').write(json.dumps({'email':email,'password':password,'token':''}))
@@ -64,7 +64,7 @@ class bot:
             account = "ezozgyfrwiwvyftwjc@tmmcv.net" 
             password="Tt950413"
             try:
-                self.han=CHRLINE(account,password,device="DESKTOPWIN")
+                self.han=CHRLINE(account,password,device="DESKTOPWIN",encType=0)
                 print('Login By Account and Password')
                 open('account.json','w').write(json.dumps({'email':account,'password':password,'token':self.han.authToken}))
             except Exception as e:
@@ -73,7 +73,7 @@ class bot:
         
         else:
             try:
-                self.han=CHRLINE(email,password,device="DESKTOPWIN")
+                self.han=CHRLINE(email,password,device="DESKTOPWIN",encType=0)
                 print('Login By Email and Password')
                 open('account.json','w').write(json.dumps({'email':email,'password':password,'token':self.han.authToken}))
             except Exception as e:
@@ -327,7 +327,7 @@ class bot:
                                 if e.message == "request blocked":
                                     ret+=f"\n※加友狀態:🔴"
                             ret+= "\n※取消狀態:🟢"
-                            ret+= "\n※版本資訊:CHRLINEbot V1.0"
+                            ret+= "\n※版本資訊:復讀 V1.0"
                             han.replyMessage(msg,f"{ret}" + "\nΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞ")
                         case '#pic':
                             if msg[1] in creator['creator']:
@@ -605,7 +605,37 @@ class bot:
                 if msg[1] not in cd:
                     text=msg[10].lower()
                     if to in game['game']:
+                        ranlist = []
+                        def generate(lst):
+                            while len(lst) < 4:
+                                lst.append(randint(1,9))
+                                if len(lst) > 1:
+                                    x = 0
+                                    while x < len(lst)-1:
+                                        if lst[x] == lst[len(lst)-1]:
+                                            del lst[len(lst)-1]
+                                        else:
+                                            x += 1
+                            final_ans = ""
+                            for i in range(0,len(lst)):
+                                final_ans = final_ans + str(lst[i])
+                            return final_ans
                         match text:
+                            case "#game":
+                                try:
+                                    ret_ = "ΞΞΞΞΞΞ〘遊戲狀態〙ΞΞΞΞΞΞ"
+                                    if game['1a2b'] == True:
+                                        ret_ += "\n※1A2B:🟢"
+                                    else:
+                                        ret_ += "\n※1A2B:🔴"
+                                    if game['guessnumber'] == True:
+                                        ret_ += "\n※猜數字:🟢"
+                                    else:
+                                        ret_ += "\n※猜數字:🔴"
+                                    ret_ += "\nΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞ"
+                                    han.replyMessage(msg, str(ret_))
+                                except Exception as e:
+                                    han.replyMessage(msg,f'error-->\n{e}')
                             case "拉霸":
                                 cd.append(msg[1])
                                 a = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
@@ -625,27 +655,155 @@ class bot:
                                 o = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
                                 slot = "拉霸機拉霸一次\n第一行==>{}  {}  {}<==\n第二行==>{}  {}  {}<==\n第三行==>{}  {}  {}<==\n第四行==>{}  {}  {}<==\n第五行==>{}  {}  {}<==\n以上是您的拉霸結果".format(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o)
                                 han.replyMessage(msg,slot)
-                                time.sleep(3)
+                                time.sleep(2)
                                 cd.remove(msg[1])
                             case '#1a2b':
-                                game['1a2b'] = True
-                                han.replyMessage(msg,"已進入1A2B遊戲")
-                                ranlist = []
-                                def generate(lst):
-                                    while len(lst) < 4:
-                                        lst.append(randint(1,9))
-                                        if len(lst) > 1:
-                                            x = 0
-                                            while x < len(lst)-1:
-                                                if lst[x] == lst[len(lst)-1]:
-                                                    del lst[len(lst)-1]
-                                                else:
-                                                    x += 1
-                                    final_ans = ""
-                                    for i in range(0,len(lst)):
-                                        final_ans = final_ans + str(lst[i])
-                                    print(final_ans)    
-                                    return final_ans
+                                if game['guessnumber'] == False:
+                                    if game['1a2b'] == False:
+                                        game['1a2b'] = True
+                                        try:
+                                            game['1a2bans'] = ""
+                                        except:
+                                            pass
+                                        han.replyMessage(msg,"已進入1A2B遊戲")
+                                        han.replyMessage(msg,"請輸入4位數字並以%作為開頭")
+                                        han.replyMessage(msg,"例如:%1234")
+                                        x=generate(ranlist)
+                                        game['1a2bans']=x
+                                        backupData()
+                                    else:
+                                        han.replyMessage(msg,"已經是1A2B遊戲狀態")
+                                        han.replyMessage(msg,"請先輸入退出1a2b後再試一次")
+                                    cd.append(msg[1])
+                                    time.sleep(2)
+                                    cd.remove(msg[1])
+                                else:
+                                    han.replyMessage(msg,"其他遊戲進行中\n請先退出其他遊戲後再試一次")
+                                    han.replyMessage(msg,"可輸入#game來查詢")
+                                    cd.append(msg[1])
+                                    time.sleep(2)
+                                    cd.remove(msg[1])
+                            case '#猜數字':
+                                if game['1a2b'] == False:
+                                    if game['guessnumber'] == False:
+                                        game['guessnumber'] = True
+                                        han.replyMessage(msg,"已進入猜數字遊戲")
+                                        han.replyMessage(msg,"請給定數字範圍") 
+                                        han.replyMessage(msg,"輸入最小值並以lowest:作為開頭")
+                                        han.replyMessage(msg,"例如:lowest:1")
+                                        backupData()
+                                    else:
+                                        han.replyMessage(msg,"已經是猜數字遊戲狀態")
+                                        han.replyMessage(msg,"請先輸入退出猜數字後再試一次")
+                                else:
+                                    han.replyMessage(msg,"其他遊戲進行中\n請先退出其他遊戲後再試一次")
+                                    han.replyMessage(msg,"可輸入#game來查詢")
+                        if game['guessnumber'] == True:
+                            if text.startswith("lowest:"):
+                                if game['guessnumberlow'] == "":
+                                    lowest = msg[10][7:]
+                                    game['guessnumberlow'] = int(lowest)
+                                    backupData()
+                                    han.replyMessage(msg,"最小值已設定為:" + lowest)
+                                    if game['guessnumberhigh'] == "":
+                                        han.replyMessage(msg,"輸入最大值並以highest:作為開頭")
+                                        han.replyMessage(msg,"例如:highest:100")
+                                    else:
+                                        han.replyMessage(msg,f"請輸入介於{str(game['guessnumberlow'])}~{str(game['guessnumberhigh'])}數字並以%作為開頭")
+                                        han.replyMessage(msg,f"例如:%{str(randint(game['guessnumberlow'],game['guessnumberhigh']))}")
+                                        game['guessnumberans'] = randint(game['guessnumberlow'],game['guessnumberhigh'])
+                                else:
+                                    han.replyMessage(msg,"已設定過最小值")
+                            if text.startswith("highest:"):
+                                if game['guessnumberhigh'] == "":
+                                    highest = msg[10][8:]
+                                    game['guessnumberhigh'] = int(highest)
+                                    backupData()
+                                    han.replyMessage(msg,"最大值已設定為:" + highest)
+                                    if game['guessnumberlow'] == "":
+                                        han.replyMessage(msg,"輸入最小值並以lowest:作為開頭")
+                                        han.replyMessage(msg,"例如:lowest:1")
+                                    else:
+                                        han.replyMessage(msg,f"請輸入介於{str(game['guessnumberlow'])}~{str(game['guessnumberhigh'])}整數並以%作為開頭")
+                                        han.replyMessage(msg,f"例如:%{str(randint(game['guessnumberlow'],game['guessnumberhigh']))}")
+                                        game['guessnumberans'] = randint(game['guessnumberlow'],game['guessnumberhigh'])
+                                else:
+                                    han.replyMessage(msg,"已設定過最大值")
+                            if text.startswith("%"):
+                                if game['guessnumberlow'] == "" or game['guessnumberhigh'] == "":
+                                    han.replyMessage(msg,"尚未給定範圍")
+                                else:
+                                    guess = msg[10][1:]
+                                    try:
+                                        guess = int(guess)  
+                                    except ValueError:  
+                                        han.replyMessage(msg,'格式錯誤，請輸入數字\n')
+                                    if guess <= game['guessnumberlow'] or guess >= game['guessnumberhigh']:
+                                        han.replyMessage(msg,'請輸入 ' + str(game['guessnumberlow']) + '~' + str(game['guessnumberhigh']) + ' 之間的整數\n')
+                                    if guess == game['guessnumberans']:
+                                        han.replyMessage(msg,"答對了! 答案就是" + str(guess))
+                                        game['guessnumber'] = False
+                                        game['guessnumberlow'] = ""
+                                        game['guessnumberhigh'] = ""
+                                        game['guessnumberans'] = ""
+                                        backupData()
+                                    elif guess < game['guessnumberans']:
+                                        game['guessnumberlow'] = guess
+                                        backupData()
+                                    else:
+                                        game['guessnumberhigh'] = guess
+                                        backupData()
+                                    if game['guessnumberlow'] == "" or game['guessnumberhigh'] == "":
+                                        pass
+                                    else:
+                                        han.replyMessage(msg,f"數字介於{str(game['guessnumberlow'])}~{str(game['guessnumberhigh'])}之間")
+                            if text == "退出猜數字":
+                                game['guessnumber'] = False
+                                game['guessnumberlow'] = ""
+                                game['guessnumberhigh'] = ""
+                                game['guessnumberans'] = ""
+                                han.replyMessage(msg,"已退出猜數字遊戲")
+                                backupData()
+                            if text == "猜數字答案":
+                                han.replyMessage(msg,"答案為:" + str(game['guessnumberans']))
+                        if game['1a2b'] == True:
+                            if text.startswith("%"):
+                                ans = msg[10][1:]
+                                finans = game['1a2bans']
+                                counter = 1
+                                result = 0
+                                for i in range(0,len(finans)):
+                                    for j in range(0,len(finans)):
+                                        if ans[i] == finans[j]:
+                                            if i == j:
+                                                result += 10
+                                            else:
+                                                result += 1
+                                han.replyMessage(msg,str(int(result/10)) + 'A' + str(result%10) + 'B')
+                                counter += 1
+                                if result == 40:
+                                    han.replyMessage(msg,"恭喜你! 答案就是" + str(finans))
+                                    game['1a2b'] = False
+                                    game['1a2bans']=''
+                                    backupData()
+                                cd.append(msg[1])
+                                time.sleep(2)
+                                cd.remove(msg[1])
+                            if text == "退出1a2b":
+                                game['1a2b'] = False
+                                game['1a2bans']= ''
+                                han.replyMessage(msg,"已退出1A2B遊戲")
+                                backupData()
+                                cd.append(msg[1])
+                                time.sleep(2)
+                                cd.remove(msg[1])
+                            if text == "1a2b答案":
+                                han.replyMessage(msg,"答案是" + str(game['1a2bans']))
+                                cd.append(msg[1])
+                                time.sleep(2)
+                                cd.remove(msg[1])
+                                
+                        
 
 
             if msg[15] == 1:
@@ -688,42 +846,42 @@ class bot:
                             backupData()
                             os.remove("cover.jpg")
         if op[3] == 65:
-                gid = op[10]
-                msgid = op[11]
-                msgids = han.getPreviousMessageIds(gid, 1000)
-                target_msg = None
-                for x in msgids[1]:
-                    if msgid == str(x[2]):
-                        target_msg = x
-                        break
-                if target_msg is not None:
-                    target_msg = han.getPreviousMessagesV2(gid, target_msg[1], target_msg[2])[0]
-                    if target_msg[15] == 0:
-                        if target_msg[1] not in cd:
-                            text = target_msg[10]
-                            unstime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(target_msg[5]/1000))))))
-                            group = han.getChats([gid])[1][0][6]
-                            user = han.getContact(target_msg[1])[22]
-                            cd.append(target_msg[1])
-                            if gid in red['reread']:
-                                a = f"@chrline\n"
-                                a += f"※收回訊息:\n{text}"
-                                a += f"\n※收回時間:\n{unstime}"
-                                arr = [{"S": str(0),"E": str(8),"M": target_msg[1]}]
-                                tag = {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}
-                                han.sendMessage(gid, a,contentMetadata=tag)
-                            else: 
-                                pass
-                            txt = "ΞΞΞΞΞΞΞ〘復讀系統〙ΞΞΞΞΞΞΞ\n"
-                            txt += "※訊息類別:文字\n"
-                            txt += f"※群組:\n{group}\n{gid}"
-                            txt += f"\n※發送者:\n{user}\n{target_msg[1]}"
-                            txt += f"\n※收回時間:\n{unstime}"
-                            txt += f"\n※訊息內容:\n{text}"
-                            txt += f"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
-                            han.sendMessage(backdoor['backdoor'], txt)
-                            time.sleep(3)
-                            cd.remove(target_msg[1])
+            gid = op[10]
+            msgid = op[11]
+            msgids = han.getPreviousMessageIds(gid, 1000)
+            target_msg = None
+            for x in msgids[1]:
+                if msgid == str(x[2]):
+                    target_msg = x
+                    break
+            if target_msg is not None:
+                target_msg = han.getPreviousMessagesV2(gid, target_msg[1], target_msg[2])[0]
+                if target_msg[15] == 0:
+                    if target_msg[1] not in cd:
+                        text = target_msg[10]
+                        unstime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(target_msg[5]/1000))))))
+                        group = han.getChats([gid])[1][0][6]
+                        user = han.getContact(target_msg[1])[22]
+                        cd.append(target_msg[1])
+                        if gid in red['reread']:
+                            a = f"@chrline\n"
+                            a += f"※收回訊息:\n{text}"
+                            a += f"\n※收回時間:\n{unstime}"
+                            arr = [{"S": str(0),"E": str(8),"M": target_msg[1]}]
+                            tag = {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}
+                            han.sendMessage(gid, a,contentMetadata=tag)
+                        else: 
+                            pass
+                        txt = "ΞΞΞΞΞΞΞ〘復讀系統〙ΞΞΞΞΞΞΞ\n"
+                        txt += "※訊息類別:文字\n"
+                        txt += f"※群組:\n{group}\n{gid}"
+                        txt += f"\n※發送者:\n{user}\n{target_msg[1]}"
+                        txt += f"\n※收回時間:\n{unstime}"
+                        txt += f"\n※訊息內容:\n{text}"
+                        txt += f"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                        han.sendMessage(backdoor['backdoor'], txt)
+                        time.sleep(2)
+                        cd.remove(target_msg[1])
 
                     # elif target_msg[15] == 1:
                     #     han.downloadObjectMsg(target_msg[4],path="test.jpg")
