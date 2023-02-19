@@ -11,6 +11,7 @@ settings = json.load(codecs.open("settings.json","r","utf-8"))
 reb = json.load(codecs.open("reb.json","r","utf-8"))
 red = json.load(codecs.open("red.json","r","utf-8"))
 game = json.load(codecs.open("game.json","r","utf-8"))
+reply = json.load(codecs.open("reply.json","r","utf-8"))
 bigdick = "u6155d5dac1395eab52faa16e832e5c65"
 mulai = time.time()
 cd = []
@@ -33,6 +34,7 @@ def backupData():
         json.dump(backdoor,codecs.open('backdoor.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
         json.dump(red,codecs.open('red.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
         json.dump(game,codecs.open('game.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(reply,codecs.open('reply.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
     except Exception as e:
         print(f'json backup error --> {e}')
 
@@ -54,7 +56,7 @@ class bot:
     def start(self):
         if token != '':
                 try:
-                    self.han=CHRLINE(token,device="DESKTOPWIN",encType=0)
+                    self.han=CHRLINE(token,device="DESKTOPWIN")
                     print('Login By Token')
                 except Exception as e:
                     open('account.json','w').write(json.dumps({'email':email,'password':password,'token':''}))
@@ -64,7 +66,7 @@ class bot:
             account = "ezozgyfrwiwvyftwjc@tmmcv.net" 
             password="Tt950413"
             try:
-                self.han=CHRLINE(account,password,device="DESKTOPWIN",encType=0)
+                self.han=CHRLINE(account,password,device="DESKTOPWIN")
                 print('Login By Account and Password')
                 open('account.json','w').write(json.dumps({'email':account,'password':password,'token':self.han.authToken}))
             except Exception as e:
@@ -73,7 +75,7 @@ class bot:
         
         else:
             try:
-                self.han=CHRLINE(email,password,device="DESKTOPWIN",encType=0)
+                self.han=CHRLINE(email,password,device="DESKTOPWIN")
                 print('Login By Email and Password')
                 open('account.json','w').write(json.dumps({'email':email,'password':password,'token':self.han.authToken}))
             except Exception as e:
@@ -88,7 +90,7 @@ class bot:
         except Exception as e:
             print(f"remove key error-->{e}")
         try:    
-            self.han.sendMessage(backdoor['backdoor'],"[自動發送]\n復讀登入成功\n作者:𝓱𝓪𝓷\nID:https://line.me/ti/p/~han174\n\n使用者資訊:\n主機:localhost\nIP:127.0.0.1")
+            self.han.sendMessage(backdoor['backdoor'],"[自動發送]\n復讀登入成功\n作者:𝓱𝓪𝓷\nID:https://line.me/ti/p/~lubu174\n\n使用者資訊:\n主機:localhost\nIP:127.0.0.1")
         except Exception as e:
             print(f"auto login send error-->{e}")
         try:
@@ -130,7 +132,7 @@ class bot:
                 if settings['autoJoin'] == True and op[11] in admin['admin'] or op[11] in creator['creator']:
                     try:
                         han.acceptChatInvitation(op[10])
-                        #han.sendMessage(op[10],"[Auto Send]\nBot Auto Accept Group Invite\nCreator:𝓱𝓪𝓷\nCreator Link:https://line.me/ti/p/~han174")
+                        #han.sendMessage(op[10],"[Auto Send]\nBot Auto Accept Group Invite\nCreator:𝓱𝓪𝓷\nCreator Link:https://line.me/ti/p/~lubu174")
                     except Exception as e:
                         print(f'accept group invite error-->{e}')
                 report(op[10],op[11],"通知邀請入群")
@@ -140,7 +142,33 @@ class bot:
             if msg[15]==0:
                 if msg[1] in admin['admin'] or msg[1] in creator['creator']:
                     text=msg[10].lower()
+                    if to in reply['reply']:
+                        if msg[1] not in cd:
+                            if text in reply['textreply']:
+                                han.replyMessage(msg,reply['textreply'][text])
+                            if text in reply['contactreply']:
+                                han.sendContact(to,reply['contactreply'][text])
+                        cd.append(msg[1])
+                        time.sleep(1)
+                        cd.remove(msg[1])
                     match text:
+                        case '#backdoor':
+                            g = backdoor['backdoor']
+                            try:
+                                try:
+                                    f = han.getChats([g])
+                                    han.replyMessage(msg,"目前模式為:群組後台")
+                                    han.replyMessage(msg,"後台名稱為:\n{}\nID為:\n{}".format(str(f[1][0][6]),g))
+                                except:
+                                    try:
+                                        han.getContact(g)
+                                        han.replyMessage(msg,"目前模式為:私聊後台")
+                                        han.replyMessage(msg,"目前後台為:")
+                                        han.sendContact(to, g)
+                                    except Exception as e:
+                                        han.replyMessage(msg,e)
+                            except Exception as e:
+                                han.relatedMessage(to,e,op.message.id)
                         case '#runtime':
                                 eltime = time.time() - mulai
                                 bot = "ΞΞΞΞ〘運行時間〙ΞΞΞΞ\n" +Runtime(eltime)
@@ -180,6 +208,20 @@ class bot:
                                 backupData()
                             else:
                                 han.replyMessage(msg,"已經是關閉狀態")
+                        case '#reply on':
+                            if to not in reply["reply"]:
+                                reply["reply"].append(to)
+                                han.replyMessage(msg,"※關鍵字回覆➤🟢")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是開啟狀態")
+                        case '#reply off':
+                            if to in reply["reply"]:
+                                reply["reply"].remove(to)
+                                han.replyMessage(msg,"※關鍵字回覆➤🔴")
+                                backupData()
+                            else:
+                                han.replyMessage(msg,"已經是關閉狀態")
                         case '#game on':
                             if to not in game["game"]:
                                 game["game"].append(to)
@@ -215,8 +257,8 @@ class bot:
                                 else: ret_ += "\n※自動入群➤🔴"
                                 ret_ +="\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ"                   
                                 ret_ += "\nCreator:𝓱𝓪𝓷"
-                                ret_ += "\nID: han174"
-                                ret_ += "\nQR:http://line.me/ti/p/~han174"
+                                ret_ += "\nID: lubu174"
+                                ret_ += "\nQR:http://line.me/ti/p/~lubu174"
                                 ret_ += "\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ"
                                 han.replyMessage(msg, str(ret_))
                             except Exception as e:
@@ -228,10 +270,12 @@ class bot:
                                 else: ret_ += "\n※防收回➤🔴"
                                 if to in game['game'] : ret_ += "\n※遊戲模式➤🟢"
                                 else: ret_ += "\n※遊戲模式➤🔴"
+                                if to in reply['reply'] : ret_ += "\n※關鍵字回覆➤🟢"
+                                else: ret_ += "\n※關鍵字回覆➤🔴"
                                 ret_ += "\nΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞ"
                                 ret_ += "\nCreator:𝓱𝓪𝓷"
-                                ret_ += "\nID: han174"
-                                ret_ += "\nQR:http://line.me/ti/p/~han174"
+                                ret_ += "\nID: lubu174"
+                                ret_ += "\nQR:http://line.me/ti/p/~lubu174"
                                 ret_ += "\nΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞ"
                                 han.replyMessage(msg, str(ret_))
                             except Exception as e:
@@ -278,6 +322,16 @@ class bot:
                             han.replyMessage(msg,"滾就滾 派殺小 幹")
                             try:
                                 red['reread'].remove(to)
+                                backupData()
+                            except:
+                                pass
+                            try:
+                                game['game'].remove(to)
+                                backupData()
+                            except:
+                                pass
+                            try:
+                                reply['reply'].remove(to)
                             except:
                                 pass
                             han.deleteSelfFromChat(to) 
@@ -575,6 +629,21 @@ class bot:
                                     try:
                                         han.sendMessage(gid,"接收遠端退群指令")
                                         han.deleteSelfFromChat(gid)
+                                        try:
+                                            game['game'].remove(gid)
+                                            backupData()
+                                        except:
+                                            pass
+                                        try:
+                                            reply['reply'].remove(gid)
+                                            backupData()
+                                        except:
+                                            pass
+                                        try:
+                                            red['reread'].remove(gid)
+                                            backupData()
+                                        except:
+                                            pass
                                         han.replyMessage(msg,"退群成功")
                                     except:
                                         han.replyMessage(msg, "我不在那個群組裡")  
@@ -602,8 +671,181 @@ class bot:
                         else:
                             han.replyMessage(msg, "無權使用開發者指令")
                             report(msg[2],msg[1],"權限者嘗試更改個簽")
+                    elif text.startswith("cbk:"):
+                        if msg[1] in creator['creator']:
+                            nb = msg[10][4:]
+                            try:
+                                han.sendMessage(nb,"測試更改")
+                                backdoor['backdoor'] = nb
+                                backupData()
+                                han.replyMessage(msg,"更改成功 目前後台為:")
+                                try:
+                                    han.sendContact(to, nb)
+                                except:
+                                    f = han.getChats([nb])
+                                    han.replyMessage(msg,"{}\nID:\n{}".format(str(f[1][0][6]),nb))
+                                han.replyMessage(msg,"提示:重啟後才會變更更改")
+                            except Exception as e:
+                                han.replyMessage(msg,"更改失敗 原因:\n{}".format(e))
+                        else:
+                            han.replyMessage(msg,"無權使用開發者指令")
+                            report(msg[2],msg[1],"管理員嘗試更改後台")  
                 if msg[1] not in cd:
                     text=msg[10].lower()
+                    if '有沒有' in text:
+                        a = '有'
+                        b = '沒有'
+                        c = random.choice([a,b])
+                        han.replyMessage(msg, c)
+                        cd.append(msg[1])
+                        time.sleep(2)
+                        cd.remove(msg[1])
+                    if '是不是' in text:
+                        a = '是'
+                        b = '不是'
+                        c = random.choice([a,b])
+                        han.replyMessage(msg, c)
+                        cd.append(msg[1])
+                        time.sleep(2)
+                        cd.remove(msg[1])
+                    if '要不要' in text:
+                        a = '要'
+                        b = '不要'
+                        c = random.choice([a,b])
+                        han.replyMessage(msg, c)
+                        cd.append(msg[1])
+                        time.sleep(2)
+                        cd.remove(msg[1])
+                    if text.startswith("抽人"):
+                        key = msg[10][2:]
+                        if key == "":
+                            ch = []
+                            gm = han.getChats([to])[1][0][8][1][4]
+                            for x in gm:
+                                ch.append(x)
+                            lucky = random.choice(ch)
+                            user = han.getContact(lucky)[22]
+                            del ch
+                            han.replyMessage(msg, f"抽到的人是:\n{user}")
+                        else:
+                            ch = []
+                            gm = han.getChats([to])[1][0][8][1][4]
+                            for x in gm:
+                                ch.append(x)
+                            lucky = random.choice(ch)
+                            user = han.getContact(lucky)[22]
+                            del ch
+                            han.replyMessage(msg, f"抽到要{key}的人是:\n{user}")
+                        cd.append(msg[1])
+                        time.sleep(2)
+                        cd.remove(msg[1])
+                    if text.startswith("抽籤 "):
+                        choice = []
+                        key = msg[10][3:].split(" ") 
+                        for i in key:
+                            choice.append(i)
+                        if len(choice) == 0:
+                            han.replyMessage(msg, "沒給我選項是要選個der")
+                        elif len(choice) == 1:
+                            han.replyMessage(msg, "只給我一個選項是要選個der")
+                        else:
+                            han.replyMessage(msg,f'我幫你選擇的是:\n{random.choice(choice)}')
+                        del choice
+                        cd.append(msg[1])
+                        time.sleep(2)
+                        cd.remove(msg[1])
+                    if text.startswith("add_reply:"):
+                        key = msg[10][10:].split(" ")
+                        x = []
+                        for i in key:
+                            x.append(i)
+                        if len(x) == 2:
+                            if x[0] in reply['textreply']:
+                                han.replyMessage(msg, "已有此關鍵字")
+                            else:
+                                reply['textreply'][x[0]] = x[1]
+                                han.replyMessage(msg, "已新增關鍵字回復")
+                                han.replyMessage(msg, f"※偵測關鍵字:\n{x[0]}\n※回復訊息:\n{x[1]}")
+                                backupData()
+                        else:
+                            han.replyMessage(msg, "新增關鍵字回復失敗")
+                        del x
+                    if text.startswith("del_reply:"):
+                        key = msg[10][10:]
+                        if key in reply['textreply']:
+                            del reply['textreply'][key]
+                            han.replyMessage(msg, "已刪除關鍵字回復")
+                            backupData()
+                        else:
+                            han.replyMessage(msg, "無此關鍵字")
+                    if text.startswith("readd_reply:"):
+                        key = msg[10][12:].split(" ")
+                        x = []
+                        for i in key:
+                            x.append(i)
+                        if len(x) == 2:
+                            if x[0] in reply['textreply']:
+                                del reply['textreply'][x[0]]
+                                reply['textreply'][x[0]] = x[1]
+                                han.replyMessage(msg, "已重設關鍵字回復")
+                                han.replyMessage(msg, f"※偵測關鍵字:\n{x[0]}\n※回復訊息:\n{x[1]}")
+                                backupData()
+                            else:
+                                han.replyMessage(msg, "無此關鍵字")
+                        else:
+                            han.replyMessage(msg, "重設關鍵字回復失敗")
+                        del x
+                    if text.startswith("add_creply:"):
+                        key = msg[10][11:].split(" ")
+                        x = []
+                        for i in key:
+                            x.append(i)
+                        if len(x) == 2:
+                            try:
+                                han.getContact(x[1])
+                                if x[0] in reply['contactreply']:
+                                    han.replyMessage(msg, "已有此關鍵字")
+                                else:
+                                    user = han.getContact(x[1])
+                                    reply['contactreply'][x[0]] = x[1]
+                                    han.replyMessage(msg, "已新增友資回復")
+                                    han.replyMessage(msg, f"※偵測關鍵字:\n{x[0]}\n※回復友資:\n{user[22]}\n{x[1]}")
+                                    backupData()
+                            except:
+                                han.replyMessage(msg, "Error-->invalid mid")
+                        else:
+                            han.replyMessage(msg, "新增友資回復失敗")
+                        del x
+                    if text.startswith("del_creply:"):
+                        key = msg[10][11:]
+                        if key in reply['contactreply']:
+                            del reply['contactreply'][key]
+                            han.replyMessage(msg, "已刪除友資回復")
+                            backupData()
+                        else:
+                            han.replyMessage(msg, "無此關鍵字")
+                    if text.startswith("readd_creply:"):
+                        key = msg[10][13:].split(" ")
+                        x = []
+                        for i in key:
+                            x.append(i)
+                        if len(x) == 2:
+                            try:
+                                han.getContact(x[1])
+                                if x[0] in reply['contactreply']:
+                                    user = han.getContact(x[1])
+                                    del reply['contactreply'][x[0]]
+                                    reply['contactreply'][x[0]] = x[1]
+                                    han.replyMessage(msg, "已重設友資回復")
+                                    han.replyMessage(msg, f"※偵測關鍵字:\n{x[0]}\n※回復友資:\n{user[22]}\n{x[1]}")
+                                    backupData()
+                                else:
+                                    han.replyMessage(msg, "無此關鍵字")
+                            except:
+                                han.replyMessage(msg, "Error-->invalid mid")
+                        else:
+                            han.replyMessage(msg, "重設友資回復失敗")
+                        del x
                     if to in game['game']:
                         ranlist = []
                         def generate(lst):
@@ -624,18 +866,24 @@ class bot:
                             case "#game":
                                 try:
                                     ret_ = "ΞΞΞΞΞΞ〘遊戲狀態〙ΞΞΞΞΞΞ"
-                                    if game['1a2b'] == True:
+                                    if to in game['1a2b']:
                                         ret_ += "\n※1A2B:🟢"
                                     else:
                                         ret_ += "\n※1A2B:🔴"
-                                    if game['guessnumber'] == True:
+                                    if to in game['guessnumber']:
                                         ret_ += "\n※猜數字:🟢"
                                     else:
                                         ret_ += "\n※猜數字:🔴"
                                     ret_ += "\nΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞ"
                                     han.replyMessage(msg, str(ret_))
+                                    cd.append(msg[1])
+                                    time.sleep(2)
+                                    cd.remove(msg[1])
                                 except Exception as e:
                                     han.replyMessage(msg,f'error-->\n{e}')
+                                    cd.append(msg[1])
+                                    time.sleep(2)
+                                    cd.remove(msg[1])
                             case "拉霸":
                                 cd.append(msg[1])
                                 a = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
@@ -658,35 +906,32 @@ class bot:
                                 time.sleep(2)
                                 cd.remove(msg[1])
                             case '#1a2b':
-                                if game['guessnumber'] == False:
-                                    if game['1a2b'] == False:
-                                        game['1a2b'] = True
+                                if to not in game['guessnumber']:
+                                    if to not in game['1a2b']:
+                                        game['1a2b'].append(to)
                                         try:
-                                            game['1a2bans'] = ""
+                                            del game['1a2bans'][to]
                                         except:
                                             pass
                                         han.replyMessage(msg,"已進入1A2B遊戲")
                                         han.replyMessage(msg,"請輸入4位數字並以%作為開頭")
                                         han.replyMessage(msg,"例如:%1234")
                                         x=generate(ranlist)
-                                        game['1a2bans']=x
+                                        game['1a2bans'][to]=x
                                         backupData()
                                     else:
                                         han.replyMessage(msg,"已經是1A2B遊戲狀態")
                                         han.replyMessage(msg,"請先輸入退出1a2b後再試一次")
-                                    cd.append(msg[1])
-                                    time.sleep(2)
-                                    cd.remove(msg[1])
                                 else:
                                     han.replyMessage(msg,"其他遊戲進行中\n請先退出其他遊戲後再試一次")
                                     han.replyMessage(msg,"可輸入#game來查詢")
-                                    cd.append(msg[1])
-                                    time.sleep(2)
-                                    cd.remove(msg[1])
+                                cd.append(msg[1])
+                                time.sleep(2)
+                                cd.remove(msg[1])
                             case '#猜數字':
-                                if game['1a2b'] == False:
-                                    if game['guessnumber'] == False:
-                                        game['guessnumber'] = True
+                                if to not in game['1a2b']:
+                                    if to not in game['guessnumber']:
+                                        game['guessnumber'].append(to)
                                         han.replyMessage(msg,"已進入猜數字遊戲")
                                         han.replyMessage(msg,"請給定數字範圍") 
                                         han.replyMessage(msg,"輸入最小值並以lowest:作為開頭")
@@ -698,39 +943,48 @@ class bot:
                                 else:
                                     han.replyMessage(msg,"其他遊戲進行中\n請先退出其他遊戲後再試一次")
                                     han.replyMessage(msg,"可輸入#game來查詢")
-                        if game['guessnumber'] == True:
+                                cd.append(msg[1])
+                                time.sleep(2)
+                                cd.remove(msg[1])
+                        if to in game['guessnumber']:
                             if text.startswith("lowest:"):
-                                if game['guessnumberlow'] == "":
+                                if to not in game['guessnumberlow']:
                                     lowest = msg[10][7:]
-                                    game['guessnumberlow'] = int(lowest)
+                                    game['guessnumberlow'][to] = int(lowest)
                                     backupData()
                                     han.replyMessage(msg,"最小值已設定為:" + lowest)
-                                    if game['guessnumberhigh'] == "":
+                                    if to not in game['guessnumberhigh']:
                                         han.replyMessage(msg,"輸入最大值並以highest:作為開頭")
                                         han.replyMessage(msg,"例如:highest:100")
                                     else:
-                                        han.replyMessage(msg,f"請輸入介於{str(game['guessnumberlow'])}~{str(game['guessnumberhigh'])}數字並以%作為開頭")
-                                        han.replyMessage(msg,f"例如:%{str(randint(game['guessnumberlow'],game['guessnumberhigh']))}")
-                                        game['guessnumberans'] = randint(game['guessnumberlow'],game['guessnumberhigh'])
+                                        han.replyMessage(msg,f"請輸入介於{str(game['guessnumberlow'][to])}~{str(game['guessnumberhigh'][to])}數字並以%作為開頭")
+                                        han.replyMessage(msg,f"例如:%{str(randint(game['guessnumberlow'][to],game['guessnumberhigh'][to]))}")
+                                        game['guessnumberans'][to] = randint(game['guessnumberlow'][to],game['guessnumberhigh'][to])
                                 else:
                                     han.replyMessage(msg,"已設定過最小值")
+                                cd.append(msg[1])
+                                time.sleep(2)
+                                cd.remove(msg[1])
                             if text.startswith("highest:"):
-                                if game['guessnumberhigh'] == "":
+                                if to not in game['guessnumberhigh']:
                                     highest = msg[10][8:]
-                                    game['guessnumberhigh'] = int(highest)
+                                    game['guessnumberhigh'][to] = int(highest)
                                     backupData()
                                     han.replyMessage(msg,"最大值已設定為:" + highest)
                                     if game['guessnumberlow'] == "":
                                         han.replyMessage(msg,"輸入最小值並以lowest:作為開頭")
                                         han.replyMessage(msg,"例如:lowest:1")
                                     else:
-                                        han.replyMessage(msg,f"請輸入介於{str(game['guessnumberlow'])}~{str(game['guessnumberhigh'])}整數並以%作為開頭")
-                                        han.replyMessage(msg,f"例如:%{str(randint(game['guessnumberlow'],game['guessnumberhigh']))}")
-                                        game['guessnumberans'] = randint(game['guessnumberlow'],game['guessnumberhigh'])
+                                        han.replyMessage(msg,f"請輸入介於{str(game['guessnumberlow'][to])}~{str(game['guessnumberhigh'][to])}整數並以%作為開頭")
+                                        han.replyMessage(msg,f"例如:%{str(randint(game['guessnumberlow'][to],game['guessnumberhigh'][to]))}")
+                                        game['guessnumberans'][to] = randint(game['guessnumberlow'][to],game['guessnumberhigh'][to])
                                 else:
                                     han.replyMessage(msg,"已設定過最大值")
+                                cd.append(msg[1])
+                                time.sleep(2)
+                                cd.remove(msg[1])
                             if text.startswith("%"):
-                                if game['guessnumberlow'] == "" or game['guessnumberhigh'] == "":
+                                if to not in game['guessnumberlow']or to not in game['guessnumberhigh']:
                                     han.replyMessage(msg,"尚未給定範圍")
                                 else:
                                     guess = msg[10][1:]
@@ -738,38 +992,50 @@ class bot:
                                         guess = int(guess)  
                                     except ValueError:  
                                         han.replyMessage(msg,'格式錯誤，請輸入數字\n')
-                                    if guess <= game['guessnumberlow'] or guess >= game['guessnumberhigh']:
-                                        han.replyMessage(msg,'請輸入 ' + str(game['guessnumberlow']) + '~' + str(game['guessnumberhigh']) + ' 之間的整數\n')
-                                    if guess == game['guessnumberans']:
+                                    if guess <= game['guessnumberlow'][to] or guess >= game['guessnumberhigh'][to]:
+                                        han.replyMessage(msg,'請輸入介於' + str(game['guessnumberlow'][to]) + '~' + str(game['guessnumberhigh'][to]) + '之間的整數')
+                                    if guess == game['guessnumberans'][to]:
                                         han.replyMessage(msg,"答對了! 答案就是" + str(guess))
-                                        game['guessnumber'] = False
-                                        game['guessnumberlow'] = ""
-                                        game['guessnumberhigh'] = ""
-                                        game['guessnumberans'] = ""
+                                        game['guessnumber'].remove(to)
+                                        del game['guessnumberlow'][to]
+                                        del game['guessnumberhigh'][to]
+                                        del game['guessnumberans'][to]
                                         backupData()
-                                    elif guess < game['guessnumberans']:
-                                        game['guessnumberlow'] = guess
+                                    elif guess < game['guessnumberans'][to]:
+                                        game['guessnumberlow'][to] = guess
                                         backupData()
                                     else:
-                                        game['guessnumberhigh'] = guess
+                                        game['guessnumberhigh'][to] = guess
                                         backupData()
-                                    if game['guessnumberlow'] == "" or game['guessnumberhigh'] == "":
+                                    if to not in game['guessnumberlow'][to] or to not in game['guessnumberhigh'][to] or guess <= game['guessnumberlow'][to] or guess >= game['guessnumberhigh'][to]:
                                         pass
                                     else:
-                                        han.replyMessage(msg,f"數字介於{str(game['guessnumberlow'])}~{str(game['guessnumberhigh'])}之間")
+                                        han.replyMessage(msg,f"數字介於{str(game['guessnumberlow'][to])}~{str(game['guessnumberhigh'][to])}之間")
+                                cd.append(msg[1])
+                                time.sleep(2)
+                                cd.remove(msg[1])
                             if text == "退出猜數字":
-                                game['guessnumber'] = False
-                                game['guessnumberlow'] = ""
-                                game['guessnumberhigh'] = ""
-                                game['guessnumberans'] = ""
+                                game['guessnumber'].remove(to)
+                                del game['guessnumberlow'][to]
+                                del game['guessnumberhigh'][to]
+                                del game['guessnumberans'][to]
                                 han.replyMessage(msg,"已退出猜數字遊戲")
                                 backupData()
+                                cd.append(msg[1])
+                                time.sleep(2)
+                                cd.remove(msg[1])
                             if text == "猜數字答案":
-                                han.replyMessage(msg,"答案為:" + str(game['guessnumberans']))
-                        if game['1a2b'] == True:
+                                if to not in game['guessnumberans']:
+                                    han.replyMessage(msg,"尚未給定範圍")
+                                else:
+                                    han.replyMessage(msg,"答案為:" + str(game['guessnumberans'][to]))
+                                cd.append(msg[1])
+                                time.sleep(2)
+                                cd.remove(msg[1])
+                        if to in game['1a2b']:
                             if text.startswith("%"):
                                 ans = msg[10][1:]
-                                finans = game['1a2bans']
+                                finans = game['1a2bans'][to]
                                 counter = 1
                                 result = 0
                                 for i in range(0,len(finans)):
@@ -783,22 +1049,22 @@ class bot:
                                 counter += 1
                                 if result == 40:
                                     han.replyMessage(msg,"恭喜你! 答案就是" + str(finans))
-                                    game['1a2b'] = False
-                                    game['1a2bans']=''
+                                    game['1a2b'].remove(to)
+                                    del game['1a2bans'][to]
                                     backupData()
                                 cd.append(msg[1])
                                 time.sleep(2)
                                 cd.remove(msg[1])
                             if text == "退出1a2b":
-                                game['1a2b'] = False
-                                game['1a2bans']= ''
+                                game['1a2b'].remove(to)
+                                del game['1a2bans'][to]
                                 han.replyMessage(msg,"已退出1A2B遊戲")
                                 backupData()
                                 cd.append(msg[1])
                                 time.sleep(2)
                                 cd.remove(msg[1])
                             if text == "1a2b答案":
-                                han.replyMessage(msg,"答案是" + str(game['1a2bans']))
+                                han.replyMessage(msg,"答案是" + str(game['1a2bans'][to]))
                                 cd.append(msg[1])
                                 time.sleep(2)
                                 cd.remove(msg[1])
